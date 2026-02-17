@@ -1,0 +1,26 @@
+body {
+    transition: background 0.3s, color 0.3s;
+    padding: 20px;
+}
+
+.claro {
+    background-color: #ffffff;
+    color: #212529;
+}
+
+.oscuro {
+    background-color: #090a0b;
+    color: #f8f9fa;
+}
+
+.opcion {
+    margin-bottom: 20px;
+}
+
+.form-check {
+    margin: 10px 0;
+}
+
+.btn {
+    margin-top: 15px;
+}

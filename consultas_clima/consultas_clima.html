@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Consultas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous" defer></script>
+    <script src="api_h/js/main.js" defer></script>
+    <link rel="stylesheet" href="api_h/css/styles.css">
+</head>
+<body>
+
+<nav class="navbar navbar-light bg-white shadow-sm mb-2">
+    <div class="container position-relative d-flex align-items-center"> 
+        <a href="../main/index.html" class="btn btn-outline-secondary me-3">
+            <b>＜</b>
+        </a>
+        <span class="navbar-brand mx-auto fs-2 fw-bold">
+            Consultas
+        </span>
+    </div>
+</nav>
+
+<br>
+<br>
+
+    <div class="container">
+
+        <input 
+            type="text" 
+            id="buscar"
+            placeholder="Buscar por descripción del clima..."
+            style="margin-bottom:10px; width: 300px;"
+        >
+
+        <table class="table table-sm table-bordered">
+            <thead>
+                <tr class="table-light">
+                    <th>Id consulta</th>
+                    <th>Usuario</th>
+                    <th>Ciudad</th>
+                    <th>Temperatura</th>
+                    <th>Descripción</th>
+                    <th>Fecha y hora</th>
+                    <th>Eliminar</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyConsultas">
+            </tbody>
+        </table>
+
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Agregar / Editar Consulta</h5>
+
+        <form id="frmConsulta">
+            <div class="row g-3">
+
+                <div class="col-md-2">
+                    <label class="form-label">Id Consulta</label>
+                    <input type="text" id="txtIdConsulta" name="txtIdConsulta" class="form-control" readonly>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Id Usuario</label>
+                    <select id="cboUsuario" name="cboUsuario" class="form-select">
+                        <option value="">Selecciona ciudad</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Id Ciudad</label>
+                    <select id="cboCiudad" name="cboCiudad" class="form-select">
+                        <option value="">Selecciona ciudad</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label">Temperatura</label>
+                    <input type="number" step="0.1" id="txtTemperatura" name="txtTemperatura" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" id="txtDescripcion" name="txtDescripcion" class="form-control">
+                </div>
+
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-outline-secondary me-2">
+                        Guardar
+                    </button>
+                    <button type="reset" class="btn btn-outline-secondary">
+                        Cancelar
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+        
+    </div>
+</body>
+</html>

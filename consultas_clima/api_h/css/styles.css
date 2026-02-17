@@ -1,0 +1,19 @@
+body {
+    padding-top: 15px;
+    background-color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+input#buscar {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
