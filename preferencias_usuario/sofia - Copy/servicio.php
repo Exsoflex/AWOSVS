@@ -32,9 +32,12 @@ if (isset($_GET["DATETIME"])) {
 
 require "conexion.php";
 $db = new Conexion();
+//////////////////////////////////////////////////////////////////////
 
-// OBTENER PREFERENCIAS
+////////////////////////////////////////////////////
+// OBTENER PREFERENCIAS DEL USUARIO 
 if (isset($_GET["obtener_preferencias"])) {
+
     if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
         echo json_encode([
             'unidad_temperatura' => 'Celsius',
@@ -43,15 +46,16 @@ if (isset($_GET["obtener_preferencias"])) {
         ]);
         exit;
     }
-    
+
     $stmt = $db->ejecutar(
-        "SELECT unidad_temperatura, tema 
-         FROM preferencias_usuario 
+        "SELECT unidad_temperatura, tema
+         FROM preferencias_usuario
          WHERE id_usuario = ?",
         [$_SESSION['id_usuario']]
     );
+
     $pref = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     echo json_encode([
         'unidad_temperatura' => $pref['unidad_temperatura'] ?? 'Celsius',
         'tema' => $pref['tema'] ?? 'claro',
@@ -60,6 +64,23 @@ if (isset($_GET["obtener_preferencias"])) {
     exit;
 }
 
+////////////////////////////////////////////////////
+// MOSTRAR TABLA DE PREFERENCIAS
+elseif (isset($_GET["preferencias"])) {
+
+    $stmt = $db->ejecutar(
+        "SELECT 
+            id_preferencia,
+            unidad_temperatura,
+            tema
+         FROM preferencias_usuario"
+    );
+
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    exit;
+}
+
+//////////////////////////////////
 // GUARDAR PREFERENCIAS
 elseif (isset($_GET["guardar_preferencias"])) {
     

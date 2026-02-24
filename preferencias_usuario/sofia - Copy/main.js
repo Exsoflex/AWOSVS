@@ -1,6 +1,6 @@
 $(document).ready(function() {
     obtenerPreferencias();
-  
+    buscarPreferencias();
     $('input[name="tema"]').change(function() {
         aplicarTema($(this).val());
     });
@@ -9,7 +9,7 @@ $(document).ready(function() {
         guardarPreferencias();
     });
 });
-
+//////
 function obtenerPreferencias() {
     $.get("servicio.php", {
         obtener_preferencias: true
@@ -30,12 +30,15 @@ function obtenerPreferencias() {
         if (datos.logueado === false) {
             console.log("Usuario no logueado - preferencias temporales");
         }
-    });
+    }, "json");
 }
+/////////pdsa
 
 function aplicarTema(tema) {
     $('body').removeClass('claro oscuro').addClass(tema);
 }
+
+////////////////////////////////////////
 
 function guardarPreferencias() {
     const unidadSeleccionada = $('input[name="unidad"]:checked').val();
@@ -61,4 +64,24 @@ function guardarPreferencias() {
             console.log(" Error al guardar preferencias");
         }
     });
+}
+
+//////////////////////////////////////////
+function buscarPreferencias() {
+  $.get("servicio.php?preferencias", function (preferencias) {
+
+    $("#tbodyProductos").html("")
+
+    for (let x in preferencias) {
+      const pref = preferencias[x]
+
+      $("#tbodyProductos").append(`
+        <tr>
+          <td>${pref.id_preferencia}</td>
+          <td>${pref.unidad_temperatura}</td>
+          <td>${pref.tema}</td>
+        </tr>
+      `)
+    }
+  }, "json")   
 }
