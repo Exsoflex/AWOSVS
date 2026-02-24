@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <title>Inicio</title>
 
@@ -15,7 +15,16 @@
 
 <!-- Barra superior -->
 <header class="navbar shadow-sm mb-2">
-    <h1 class="logo">Clima App</h1>
+    <h1 class="logo">Clima App</h1> 
+        <a href="/AWOSVS/consultas_clima/consultas_clima.html">
+            <button class="btn-custom boton1"> Consultas </button>
+        </a>
+        <a href="/AWOSVS/victor/victor/index.html">
+           <button class="btn-custom boton1"> Favoritos </button>
+        </a>
+        <a href="/AWOSVS/API-abdiel/API-abdiel/index.html">
+            <button class="btn-custom boton1"> Ciudades </button>
+        </a>
 
     <div class="menu-btn" id="menuBtn">
         ☰
@@ -50,7 +59,7 @@
 
     <div class="div2">
        
-      <section class="parent1">
+<section class="parent1">
 
     <section class="card">
         <a href="/AWOSVS/consultas_clima/consultas_clima.html">
@@ -65,26 +74,43 @@
     </section>
 
     <section class="card">
-        <a href="/AWOSVS/API-abdiel/API-abdiel/index.html">
-            <button class="btn-custom boton1"> Ciudades </button>
-        </a>
-    </section>
-
-    <section class="card">
         Clima de hoy <br> (Piedras Negras)
-<div id="data"></div>
-<img id="img">
+            <div id="data2"></div>
+            <img id="img">
         <script src="PW_Test/weather.js"></script>
     </section>
 
     <section class="card">
+        Clima de hoy <br> (Nava)
+            <div id="data"></div>
+            <img id="img">
+        <script src="PW_Test/weather.js"></script>
+    </section>
+
+<!----------------------
+    <section class="card">
    <a href="/AWOSVS/ratchet.html">
             <button class="btn-custom boton1"> Comentarios </button>
     </section>
+----------------->
 
 </section>
 
-    
+<div class="chat-section mt-5 mb-4">
+        <h3 class="text-center mb-4" style="color: #333; font-weight: bold;">
+            Chat comunitario en tiempo real
+        </h3>
+        
+        <iframe 
+            src="/AWOSVS/ratchet.html"
+            width="100%"
+            height="600px"          
+            frameborder="0"
+            title="Chat en vivo"
+            style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); background: white;">
+        </iframe>
+    </div>
+
     <a href="https://wa.me/8781150384?text=Cual es el clima de mi ciudad?" target="_blank" class="btn btn-success rounded rounded-circle btn-whatsapp" style="
         position: fixed;
         bottom: 5px;
@@ -95,6 +121,7 @@
     </a>
 
     </div>
+    
 </div>
 
 <!--------------------------------------->
