@@ -1,14 +1,19 @@
 html, body {
-    height: 100%;
+    height: auto;
     margin: 0;
+    padding: 0;
+    min-height: 100%;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .parent {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    flex-direction: column;
     grid-template-rows: repeat(5, 1fr);
-    gap: 8px;
-    height: calc(100vh - 60px);
+    min-height: auto;
 
     font: 1em sans-serif;
     font-size: 20px;
@@ -20,26 +25,27 @@ html, body {
 
 .div1 {
     grid-column: span 5;
-    grid-row: span 3;
-
-   background: linear-gradient(135deg, #fed989,#66bfff , #8f66ff);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
+    grid-row: span 1;
+    background: linear-gradient(135deg, #fed989,#66bfff , #8f66ff);
+    
+    width: 100%;
+    padding: 40px 20px;
+   
 }
 
 
 .div2 {
     grid-column: span 5;
     grid-row: span 2;
-    grid-row-start: 4;
+    grid-row-start: 2;
     background-color: rgb(255, 255, 255);
+    padding: 20px 0;
 
+    /*
     display: flex;
     align-items: center;
     justify-content: center;
+    */
 }
 
 /*-----------Parent1-----------*/
@@ -138,8 +144,12 @@ html, body {
 /*-----------Texts-----------*/
 
 .p1 {
+    max-width: 1200px;
+    margin: 50px auto;
+
     font-family: 'Gadget', Gadget, sans-serif;
-    font-size: 80px;
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    line-height: 1.2;
     font-weight: bold;
     text-align: center;
     color: #ffffff;
@@ -151,9 +161,11 @@ html, body {
 
 
 /*-----------BARRA SUPERIOR-----------*/
-
+:root {
+    --navbar-height: 80px;
+}
 .navbar {
-    height: 60px;
+    height: var(--navbar-height);
     background-color: #ffffff;
     color: rgb(0, 0, 0);
 
@@ -177,16 +189,16 @@ html, body {
 /*-----------BARRA LATERAL-----------*/
 .sidebar {
     position: fixed;
-    top: 60px;
+    top: var(--navbar-height);
+    height: calc(100vh - var(--navbar-height));
     right: 0;
     width: 300px;
-    height: calc(100vh - 60px);
 
     background-color: #f4f4f4;
     padding: 20px;
     box-sizing: border-box;
 
-    transform: translateX(100%); /* 🔥 fuera */
+    transform: translateX(100%);
     transition: transform 0.3s ease;
     z-index: 1000;
 }
@@ -198,7 +210,8 @@ html, body {
 /*-----------OVERLAY-----------*/
 .overlay {
     position: fixed;
-    top: 0;
+    top: var(--navbar-height);
+    height: calc(100vh - var(--navbar-height));
     left: 0;
 
     width: 100%;
@@ -217,8 +230,20 @@ html, body {
     pointer-events: all;
 }
 
+/*-----------CHAT-----------*/
+.chat-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
 
-
+@media (max-width: 768px) {
+    .chat-section iframe {
+        height: 500px;
+    }
+}
+/*----------------------------*/
 
 * {
     box-sizing: border-box;
