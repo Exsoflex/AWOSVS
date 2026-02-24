@@ -11,10 +11,10 @@ function buscarUsuarios() {
             <tr>
                 <td>${usuario.id}</td>
                 <td>${usuario.usuario}</td>
-                <td>${usuario.ciudades_favoritas}</td>
+                <td><span class='badge text-bg-primary me-1 mb-1'>${usuario.ciudades_favoritas.split(", ").join("<button class='btn btn-secondary btn-sm btn-eliminar-ciudad'  data-id='" + usuario.id + "'>&times;</button></span><span class='badge text-bg-primary me-1 mb-1'>")}<button class='btn btn-secondary btn-sm btn-eliminar-ciudad'  data-id='" + usuario.id+ "'>&times;</button></span></td>
                 <td>${usuario.total_favoritos}</td>
                 <td><button class="btn btn-danger btn-eliminar" data-id="${usuario.id}">Eliminar
-                <button class="btn btn-info btn-editar mb-1 me-1" data-id="${usuario.id}">Editar</button>
+                <!-- <button class="btn btn-info btn-editar mb-1 me-1" data-id="${usuario.id}">Editar</button> -->
 
                 </td>
 
@@ -58,6 +58,7 @@ $("#frmUsuarios").submit(function (event) {
 
                 $("#frmUsuarios")[0].reset()
                 buscarUsuarios()
+                conn.send("buscar-usuarios")
             }
             else {
                 alert("Error: " + respuesta)
@@ -65,6 +66,25 @@ $("#frmUsuarios").submit(function (event) {
         }
     )
 })
+$(document).on("click", ".btn-eliminar-ciudad", function () {
+    const idUsuario = $(this).data("id")
+    const nombre = $(this).parent().text()
+    $.post("servicio.php?eliminarCiudadFavorito", {
+        id_usuario: idUsuario,
+        nombre: nombre
+    }, function (respuesta) {
+        if (respuesta === "correcto") {
+            alert("Ciudades favoritas eliminadas")
+            buscarUsuarios()
+            conn.send("buscar-usuarios")
+        }
+        else if (respuesta === "error") {
+            alert("Este usuario no cuenta con ciudades favoritas")
+        }
+    })
+})
+
+
 
 $(document).on("click", ".btn-eliminar", function () {
 
@@ -80,6 +100,7 @@ $(document).on("click", ".btn-eliminar", function () {
         if (respuesta === "correcto") {
             alert("Ciudades favoritas eliminadas")
             buscarUsuarios()
+            conn.send("buscar-usuarios")
         }
         else if (respuesta === "error") {
             alert("Este usuario no cuenta con ciudades favoritas")
@@ -102,4 +123,18 @@ $.get("servicio.php?ciudadesCombo", function (usuarios) {
     }
 })
 
+const conn = new WebSocket("ws://localhost:82/chat")
+conn.onmessage = function (e) {
+    const data = e.data
+    console.log(data)
+    if (data == "buscar-usuarios") {
+        buscarUsuarios()
+        const toastLiveExample = document.getElementById("liveToast")
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastBootstrap.show()
 
+    }
+}
+conn.onopen = function (e) {
+    console.log("Conexión websocket correcta")
+}

@@ -35,6 +35,12 @@
                     <option value="">Selecciona una ciudad</option>
                 </select>
             </div>
+            <div class="mb-1">
+                <label>Filtrar por:</label>
+                <select id="cboPopulares" name="" class="form-select">
+                    <option value="">Selecciona alguna opción</option>
+                </select>
+            </div>
 
             <div class="mb-1">
                 <button type="submit" class="btn btn-primary">Guardar</button>
@@ -60,6 +66,24 @@
         </table>
         <a href="/AWOSVS/main/index.html" class="btn btn-dark" style="align-items: center;">Regresar al menú
             principal</a>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+        <div id="liveToast" class="toast shadow border-0 rounded-3" role="alert" aria-live="assertive"
+            aria-atomic="true" data-bs-delay="3000">
+            <div class="toast-header bg-warning text-black rounded-top">
+                <strong class="me-auto">Notificación</strong>
+                <small>Ahora</small>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast">
+                </button>
+            </div>
+            <div class="toast-body bg-light">
+                Nuevo cambio en ciudades favoritas.
+            </div>
+
+        </div>
+
     </div>
 </body>
 

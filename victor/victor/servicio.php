@@ -57,23 +57,11 @@ if (isset($_GET["iniciarSesion"])) {
 } elseif (isset($_GET["usuarios"])) {
 
   $select = $con->select(
-    "usuarios",
-    "
-    usuarios.id_usuario AS id,
-    usuarios.nombre AS usuario,
-    count(favoritos.id_favorito) as total_favoritos,
-    IFNULL(
-      GROUP_CONCAT(ciudades.nombre SEPARATOR ', '),
-      'Sin favoritos'
-    ) AS ciudades_favoritas
+    "view_usuarios_favoritos",
+    "*
     "
   );
 
-
-  $select->leftjoin("favoritos ON favoritos.id_usuario = usuarios.id_usuario");
-  $select->leftjoin("ciudades ON ciudades.id_ciudad = favoritos.id_ciudad");
-  $select->groupby("usuarios.id_usuario");
-  $select->orderby("usuarios.id_usuario ASC");
   $select->limit(20);
 
   header("Content-Type: application/json");
