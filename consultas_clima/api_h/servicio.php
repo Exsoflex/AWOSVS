@@ -75,22 +75,8 @@ if (isset($_GET["iniciarSesion"])) {
 elseif (isset($_GET["consultas"])) {
 
     $select = $con->select(
-        "consultas_clima cc",
-        "
-        cc.id_consulta AS id,
-        u.nombre AS Usuario,
-        c.nombre AS Ciudad,
-        cc.temperatura,
-        cc.descripcion,
-        cc.fecha_consulta AS fechaHora
-        "
-    );
-
-    $select->innerjoin(
-        "usuarios u ON u.id_usuario = cc.id_usuario"
-    );
-    $select->innerjoin(
-        "ciudades c ON c.id_ciudad = cc.id_ciudad"
+        "view_consultas_detalle cc",
+        "*"
     );
 
     if (!empty($_GET["buscar"])) {

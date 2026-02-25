@@ -13,7 +13,9 @@ function consultas(busqueda = "") {
                 <tr>
                     <td>${c.id}</td>
                     <td>${c.Usuario}</td>
+                    <td>${c.email}</td>
                     <td>${c.Ciudad}</td>
+                    <td>${c.Pais}</td>
                     <td>${c.temperatura}°C</td>
                     <td>${c.descripcion}</td>
                     <td>${c.fechaHora}</td>
