@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -18,7 +20,7 @@
         <div class="header-section">
 
             <h1 class="display-4 mb-2"><i class="bi bi-globe-americas"></i> Gestor de Ciudades</h1>
-            <p class="lead mb-0">Explora y gestiona ciudades del mundo</p>
+            <p class="lead mb-0">Mapa meteorológico</p>
             
         </div>
 
@@ -54,24 +56,27 @@
                 <h5 class="mb-0 text-primary" id="tituloMapa">
                      Cargando tu ubicación...
                 </h5>
+                <select id="selectCapa">
+                    <option disabled selected>Seleccione capa</option>
+                    <option value="clouds_new">Nubes</option>
+                    <option value="precipitation_new">Precipitación</option>
+                    <option value="pressure_new">Presión</option>
+                    <option value="wind_new">Viento</option>
+                    <option value="temp_new">Temperatura</option>
+                </select>
                 <button onclick="obtenerUbicacionUsuario()" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-geo-alt-fill"></i> Mi Ubicación
                 </button>
+                        </div>
+            
+            <div id="mapaMeteo" style="height: 450px; width: 100%; min-height: 450px;">
+                <div id="panelInfo">
+    <button onclick="cerrarPanel()" class="btn-cerrar">✕</button>
+    <div id="contenidoInfo"></div>
+</div>
             </div>
-            <iframe id="mapaGoogle" 
-                    src="https://www.google.com/maps?q=19.4326,-99.1332&output=embed" 
-                    width="100%" 
-                    height="450" 
-                    style="border:0;" 
-                    allowfullscreen="" 
-                    loading="lazy">
-            </iframe>
         </div>
-
-        <a href="/AWOSVS/main/index.html" class="btn btn-outline-secondary me-3">
-            <b>＜ Regresar al menu principal</b>
-        </a>
-
+ 
     </div>
 </div>
 
@@ -131,3 +136,4 @@
 <script src="main.js"></script>
 </body>
 </html>
+
