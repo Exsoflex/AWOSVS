@@ -75,21 +75,20 @@ if (isset($_GET["iniciarSesion"])) {
 elseif (isset($_GET["consultas"])) {
 
     $select = $con->select(
-        "view_consultas_detalle cc",
+        "view_consultas_detalle",
         "*"
     );
 
-    if (!empty($_GET["buscar"])) {
-        $select->where("cc.descripcion", "LIKE", $_GET["buscar"]);
-    }
+        if (!empty($_GET["buscar"])) {
+            $select->where("descripcion", "LIKE", $_GET["buscar"]);
+        }
 
-    $select->orderby("id DESC");
-    $select->limit(10);
+        $select->orderby("id_consulta DESC");
+        $select->limit(10);
 
-    header("Content-Type: application/json");
-    echo json_encode($select->execute());
+        header("Content-Type: application/json");
+        echo json_encode($select->execute());
 }
-
 
 
 elseif (isset($_GET["eliminarConsulta"])) {

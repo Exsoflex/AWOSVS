@@ -11,30 +11,29 @@ function consultas(busqueda = "") {
 
             $("#tbodyConsultas").append(`
                 <tr>
-                    <td>${c.id}</td>
-                    <td>${c.Usuario}</td>
+                    <td>${c.id_consulta}</td>
+                    <td>${c.usuario}</td>
                     <td>${c.email}</td>
-                    <td>${c.Ciudad}</td>
-                    <td>${c.Pais}</td>
+                    <td>${c.ciudad}</td>
+                    <td>${c.pais}</td>
                     <td>${c.temperatura}°C</td>
                     <td>${c.descripcion}</td>
-                    <td>${c.fechaHora}</td>
+                    <td>${c.fecha_consulta}</td>
                     <td>
-                    <button class="btn btn-outline-secondary btn-sm btn-eliminar" data-id="${c.id}">
-                        🗑 Eliminar
-                    </button>
+                        <button class="btn btn-outline-secondary btn-sm btn-eliminar" data-id="${c.id_consulta}">
+                            🗑 Eliminar
+                        </button>
                     </td>
                     <td>
-                    <button class="btn btn-outline-secondary btn-sm btn-editar" data-id="${c.id}">
-                         ✏ Editar
-                    </button>
+                        <button class="btn btn-outline-secondary btn-sm btn-editar" data-id="${c.id_consulta}">
+                            ✏ Editar
+                        </button>
                     </td>
                 </tr>
             `);
         }
     });
 }
-
 $("#buscar").on("keyup", function () {
     let texto = $(this).val();
     consultas(texto);
