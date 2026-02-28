@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3000;
-const API_KEY = "add6fb2d4a56082bd574efe3e676da6c";
+const API_KEY = process.env.API_KEY;
 
 app.get("/api/clima/:ciudad", async (req, res) => {
 
