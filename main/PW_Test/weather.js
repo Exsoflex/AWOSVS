@@ -26,3 +26,6 @@ function apiFetching(city, dataId, imgId) {
 apiFetching("Nava, MX", "data1", "img1");
 apiFetching("Monclova, MX", "data2", "img2");
 apiFetching("Piedras Negras, MX", "data3", "img3");
+apiFetching("New York, US", "data4", "img4");
+apiFetching("Tokyo, JP", "data5", "img5");
+apiFetching("Alexandria, EG", "data6", "img6");
