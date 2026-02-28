@@ -7,7 +7,7 @@ function obtenerUbicacionUsuario() {
                 
                 // Actualizar el mapa con la ubicación del usuario
                 const mapaIframe = document.getElementById('mapaGoogle');
-                mapaIframe.src = `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
+               iniciarMapa(lat, lng, "Tu ubicación actual");
                 
                 document.getElementById('tituloMapa').textContent = 'Tu ubicación actual';
             },
@@ -97,7 +97,7 @@ function mostrarCiudades(ciudades) {
 
             // Actualizar el mapa
             const mapaIframe = document.getElementById('mapaGoogle');
-            mapaIframe.src = `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
+            iniciarMapa(lat, lng, `${nombre}, ${pais}`);
 
             document.getElementById('tituloMapa').textContent = `${nombre}, ${pais}`;
         });     
@@ -201,3 +201,134 @@ document.getElementById("frmCiudad").addEventListener("submit", function(e) {
         alert("Error al procesar la solicitud");
     });
 });
+
+//iniciar mapa meteorogico
+const apiKey = "add6fb2d4a56082bd574efe3e676da6c";
+let capa = "";
+
+let mapa = null;
+let capaMeteo = null;
+
+let marcador = null;
+function iniciarMapa(lat, lng, titulo){
+    lat = parseFloat(lat);
+    lng = parseFloat(lng);
+
+    const timeStamp = Math.floor(Date.now() / 1000);
+    if(!mapa){
+        mapa = L.map('mapaMeteo').setView([lat, lng], 6);
+
+         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(mapa);
+
+        
+        
+        capaMeteo = L.tileLayer(
+            `https://tile.openweathermap.org/map/${capa}/{z}/{x}/{y}.png?appid=${apiKey}&ts=${timeStamp}`,
+            { opacity: 1,
+                className: 'capa-meteo'
+             }
+        ).addTo(mapa);
+
+              cargarMarcadoresMapa(); 
+    } else {
+        
+        mapa.setView([lat, lng], 6);
+    }
+    if(marcador) mapa.removeLayer(marcador);
+    const icono = L.divIcon({
+        className: '',
+        html: `<div style="
+            width: 16px; height: 16px;
+            background: #667eea;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        "></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+    });
+
+    marcador = L.marker([lat, lng], { icon: icono }).addTo(mapa);
+
+    obtenerDatosClima(lat, lng);
+
+    document.getElementById('tituloMapa').textContent = titulo;
+}
+
+// Cambiar capa meteorológica
+document.getElementById("selectCapa").addEventListener("change", function(){
+    capa = this.value;
+
+    if(capaMeteo) mapa.removeLayer(capaMeteo);
+
+    capaMeteo = L.tileLayer(
+            `https://tile.openweathermap.org/map/${capa}/{z}/{x}/{y}.png?appid=${apiKey}`,
+            { opacity: 1 }
+        ).addTo(mapa);
+
+    
+});
+
+//Obtener datos del clima
+function obtenerDatosClima(lat, lng){
+    
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}&units=metric&lang=es`)
+    .then(r => r.json())
+    .then(data => mostrarInfo(data, lng, lat));
+
+    fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lng}&appid=${apiKey}`)
+    .then(r => r.json())
+    .then(data => calidadAire(data));
+
+    }
+
+    function mostrarInfo(data, lng, lat){
+        document.getElementById("contenidoInfo").innerHTML = `
+            <h5>${data.name}, ${data.sys.country}</h5>
+            <p><strong>Clima:</strong> ${data.weather[0].description}</p>
+            <p><strong>Temperatura:</strong> ${data.main.temp} °C</p>
+            <p><strong>Humedad:</strong> ${data.main.humidity} %</p>
+            <p><strong>Viento:</strong> ${data.wind.speed} m/s</p>
+        `;
+        document.getElementById("panelInfo").style.display = "block";
+
+    }
+
+    function calidadAire(data){
+        const niveles = ["Buena", "Moderada", "Dañina para grupos sensibles", "Dañina", "Muy dañina"];
+        const colores = ["#009966", "#ffde33", "#ff9933", "#cc0033", "#660099"];
+        const nivel = data.list[0].main.aqi;
+        const componente = data.list[0].components;
+
+        document.getElementById("contenidoInfo").innerHTML += `
+            <h5>Calidad del aire: <span style="color:${colores[nivel-1]}">${niveles[nivel-1]}</span></h5>
+            <p><strong>PM2.5:</strong> ${componente.pm2_5} μg/m³</p>
+            <p><strong>PM10:</strong> ${componente.pm10} μg/m³</p>
+            <p><strong>O3:</strong> ${componente.o3} μg/m³</p>
+            <p><strong>NO2:</strong> ${componente.no2} μg/m³</p>
+            <p><strong>SO2:</strong> ${componente.so2} μg/m³</p>
+            <p><strong>CO:</strong> ${componente.co} μg/m³</p>
+        `;
+
+    }
+
+    function cerrarPanel(){
+        document.getElementById("panelInfo").style.display = "none";
+    }
+
+function cargarMarcadoresMapa() {
+    fetch("servicio.php?ciudadesUbicacion")
+        .then(r => r.json())
+        .then(ciudades => {
+            ciudades.forEach(ciudad => {
+                L.marker([ciudad.latitud, ciudad.longitud])
+                 .addTo(mapa)
+                 .bindPopup(`${ciudad.nombre}, ${ciudad.pais}`);
+            });
+        });
+}
+
+    
+
