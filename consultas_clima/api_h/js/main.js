@@ -109,6 +109,7 @@ $("#frmConsulta").submit(function (event) {
     }
 
     $.post(url, $(this).serialize(), function (respuesta) {
+        console.log(respuesta);
         if (respuesta === "correcto") {
             alert("Guardado correctamente");
             $("#frmConsulta")[0].reset();

@@ -1,24 +1,20 @@
-const apikey = "add6fb2d4a56082bd574efe3e676da6c";
-let units = "metric";
-
 function apiFetching(city, dataId, imgId) {
 
-    const api = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=${units}&lang=es`;
+    const api = `https://awosvs.onrender.com/api/clima/${city}`;
 
     fetch(api)
-    .then((res) => res.json())
-    .then((data) => {
-        console.log(data);
+    .then(res => res.json())
+    .then(data => {
 
-        let temp = data.main.temp;
-        let icon = data.weather[0].icon;
+        let temp = data.temperatura;
+        let icon = data.icono;
 
         let iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
         document.getElementById(dataId).innerHTML = `${temp} °C`;
         document.getElementById(imgId).src = iconUrl;
     })
-    .catch((error) => {
+    .catch(error => {
         console.log("Error:", error);
     });
 }
@@ -29,3 +25,5 @@ apiFetching("Piedras Negras, MX", "data3", "img3");
 apiFetching("New York, US", "data4", "img4");
 apiFetching("Tokyo, JP", "data5", "img5");
 apiFetching("Alexandria, EG", "data6", "img6");
+
+

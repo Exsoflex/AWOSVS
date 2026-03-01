@@ -93,14 +93,16 @@ elseif (isset($_GET["consultas"])) {
 
 elseif (isset($_GET["eliminarConsulta"])) {
 
-    $delete = $con->delete("consultas_clima");
-    $delete->where("id_consulta", "=", $_POST["txtId"]);
+    $id = $_POST["txtId"];
 
-    if ($delete->execute()) {
-        echo "correcto";
-    } else {
-        echo "error";
-    }
+    $sql = "CALL eliminarConsulta(:id, @eliminado)";
+    $stmt = $con->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id
+    ]);
+
+    echo "correcto";
 }
 
 elseif (isset($_GET["ciudadesCombo"])) {
@@ -124,24 +126,22 @@ elseif (isset($_GET["usuariosCombo"])) {
 
 elseif (isset($_GET["agregarConsulta"])) {
 
-    $insert = $con->insert(
-        "consultas_clima",
-        "id_usuario, id_ciudad, temperatura, descripcion, fecha_consulta"
-    );
+    $usuario = $_POST["cboUsuario"];
+    $ciudad = $_POST["cboCiudad"];
+    $temperatura = $_POST["txtTemperatura"];
+    $descripcion = $_POST["txtDescripcion"];
 
-    $insert->value($_POST["cboUsuario"]);
-    $insert->value($_POST["cboCiudad"]);
-    $insert->value($_POST["txtTemperatura"]);
-    $insert->value($_POST["txtDescripcion"]);
-    $insert->value(date("Y-m-d H:i:s"));
+    $sql = "CALL agregarConsulta(:usuario, :ciudad, :temp, :descripcion, @nuevoId, @tempOut, @descOut)";
+    $stmt = $con->prepare($sql);
 
-    if ($insert->execute()) {
-        echo "correcto";
-        exit;
-    } else {
-        echo "error";
-        exit;
-    }
+    $stmt->execute([
+        ':usuario' => $usuario,
+        ':ciudad' => $ciudad,
+        ':temp' => $temperatura,
+        ':descripcion' => $descripcion
+    ]);
+
+    echo "correcto";
 }
 
 
@@ -159,18 +159,26 @@ elseif (isset($_GET["obtenerConsulta"])) {
 
 elseif (isset($_GET["modificarConsulta"])) {
 
-    $update = $con->update("consultas_clima");
-    $update->set("id_usuario", $_POST["cboUsuario"]);
-    $update->set("id_ciudad", $_POST["cboCiudad"]);
-    $update->set("temperatura", $_POST["txtTemperatura"]);
-    $update->set("descripcion", $_POST["txtDescripcion"]);
-    $update->where("id_consulta", "=", $_POST["txtIdConsulta"]);
+    $id = $_POST["txtIdConsulta"];
+    $usuario = $_POST["cboUsuario"];
+    $ciudad = $_POST["cboCiudad"];
+    $temperatura = $_POST["txtTemperatura"];
+    $descripcion = $_POST["txtDescripcion"];
 
-    if ($update->execute()) {
-        echo "correcto";
-    } else {
-        echo "error";
-    }
+    $sql = "CALL modificarConsulta(:id, :usuario, :ciudad, :temp, :descripcion, 
+            @idMod, @userMod, @cityMod, @tempMod, @descMod)";
+
+    $stmt = $con->prepare($sql);
+
+    $stmt->execute([
+        ':id' => $id,
+        ':usuario' => $usuario,
+        ':ciudad' => $ciudad,
+        ':temp' => $temperatura,
+        ':descripcion' => $descripcion
+    ]);
+
+    echo "correcto";
 }
 
 ?>
