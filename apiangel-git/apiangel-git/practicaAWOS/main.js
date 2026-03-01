@@ -9,7 +9,7 @@ function buscarUsuarios() {
                 <td>${usuario.id_usuario}</td>
                 <td>${usuario.nombre}</td>
                 <td>${usuario.email}</td>
-                <td>${usuario.password}</td>
+                <td>${usuario.contrasena}</td>
                 <td>${usuario.fecha_registro}</td>
                 <td>${usuario.total_consultas}</td>
                 <td>
@@ -39,11 +39,11 @@ $("#frmUsuarios").submit(function (event) {
     event.preventDefault()
 
     if ($("#txtId").val()) {
-        $.post("servicio.php?modificarProducto", $(this).serialize(), function (respuesta) {
+        $.post("servicio.php?modificarUsuario", $(this).serialize(), function (respuesta) {
             if (respuesta == "correcto") {
-                alert("Producto modificado correctamente")
-                $("#frmProducto").get(0).reset()
-                buscarProductos()
+                alert("Usuario modificado correctamente")
+                $("#frmUsuarios").get(0).reset()
+                buscarUsuarios()
             }
         })
         return
@@ -60,33 +60,33 @@ $("#frmUsuarios").submit(function (event) {
 
 $(document).on("click", ".btn-editar", function (event) {
     const id = $(this).data("id")
+    console.log("hola profe")
 
-    $.get("servicio.php?editarProducto", {
+    $.get("servicio.php?editarUsuario", {
         id: id
-    }, function (productos) {
-        const producto = productos[0]
+    }, function (usuarios) {
+        const usuario = usuarios[0]
 
-        $("#txtId").val(producto.id)
-        $("#txtNombre").val(producto.nombre)
-        $("#cboCategoria").val(producto.categoria)
-        $("#txtPrecio").val(producto.precio)
-        $("#txtExistencias").val(producto.existencias)
+        $("#txtId").val(usuario.id_usuario)
+        $("#txtNombre").val(usuario.nombre)
+        $("#txtEmail").val(usuario.email)
+        $("#txtContrasena").val(usuario.password)
     })
 })
 
 $(document).on("click", ".btn-eliminar", function (event) {
     const id = $(this).data("id")
 
-    if (!confirm("Deseas eliminar este producto?")) {
+    if (!confirm("Deseas eliminar este Usuario?")) {
         return
     }
 
-    $.post("servicio.php?eliminarProducto", {
+    $.post("servicio.php?eliminarUsuario", {
         txtId: id
     }, function (respuesta) {
         if (respuesta == "correcto") {
-            alert("Producto eliminado correctamente")
-            buscarProductos()
+            alert("Usuario eliminado correctamente")
+            buscarUsuarios()
         }
     })
 })

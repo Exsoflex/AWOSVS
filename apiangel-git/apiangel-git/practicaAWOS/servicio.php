@@ -58,22 +58,7 @@ if (isset($_GET["iniciarSesion"])) {
   }
 }
 elseif (isset($_GET["usuarios"])) {
-  $select = $con->select("usuarios AS u", "
-  id_usuario,
-  nombre,
-  email,
-  REGEXP_REPLACE(password,'.','*') AS password,
-  fecha_registro,
-  (
-    SELECT
-          COUNT(id_usuario)
-          FROM
-              consultas_clima
-          WHERE
-              id_usuario = u.id_usuario
-  ) AS total_consultas
-
-  ");
+  $select = $con->select("view_usr_busquedas");
   //$select->innerjoin("categorias ON categorias.id = usuarios.categoria");
   $select->orderby("id_usuario DESC");
   $select->limit(10);
@@ -81,11 +66,11 @@ elseif (isset($_GET["usuarios"])) {
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["editarProducto"])) {
+elseif (isset($_GET["editarUsuario"])) {
   $id = $_GET["id"];
 
-  $select = $con->select("productos", "*");
-  $select->where("id", "=", $id);
+  $select = $con->select("usuarios", "*");
+  $select->where("id_usuario", "=", $id);
 
   header("Content-Type: application/json");
   echo json_encode($select->execute());
@@ -104,11 +89,11 @@ elseif (isset($_GET["categoriasCombo"])) {
   header("Content-Type: application/json");
   echo json_encode($array);
 }
-elseif (isset($_GET["eliminarProducto"])) {
-  $delete = $con->delete("productos");
-  $delete->where("id", "=", $_POST["txtId"]);
+elseif (isset($_GET["eliminarUsuario"])) {
+  $prepare = $con->prepare("CALL eliminarUsuario(:id_usuario)");
+  $prepare->bindParam(":id_usuario",$_POST["txtId"]);
 
-  if ($delete->execute()) {
+  if ($prepare->execute()) {
     echo "correcto";
   }
   else {
@@ -116,31 +101,26 @@ elseif (isset($_GET["eliminarProducto"])) {
   }
 }
 elseif (isset($_GET["agregarUsuario"])) {
-  $insert = $con->insert("usuarios", "nombre, email, password");
-  $insert->value($_POST["txtNombre"]);
-  $insert->value($_POST["txtEmail"]);
-  $insert->value($_POST["txtContrasena"]);
 
-  $insert->execute();
+    $prepare = $con->prepare("CALL insertarUsuario(:nombre, :email, :password)");
 
-  $id = $con->lastInsertId();
+    #$password = password_hash($_POST["txtContrasena"], PASSWORD_DEFAULT);
 
-  if (is_numeric($id)) {
-    echo $id;
-  }
-  else {
-    echo "0";
-  }
+    $prepare->bindParam(":nombre", $_POST["txtNombre"]);
+    $prepare->bindParam(":email", $_POST["txtEmail"]);
+    $prepare->bindParam(":password", $_POST["txtContrasena"]);
+    
+    $prepare->execute();
+
+    echo "correcto";
 }
-elseif (isset($_GET["modificarProducto"])) {
-  $update = $con->update("productos");
-  $update->set("nombre", $_POST["txtNombre"]);
-  $update->set("categoria", $_POST["cboCategoria"]);
-  $update->set("precio", $_POST["txtPrecio"]);
-  $update->set("existencias", $_POST["txtExistencias"]);
-  $update->where("id", "=", $_POST["txtId"]);
-
-  if ($update->execute()) {
+elseif (isset($_GET["modificarUsuario"])) {
+  $prepare = $con->prepare("CALL modificarUsuario(:id_usuario,:nombre,:email,:password)");
+  $prepare->bindParam(":id_usuario",$_POST["txtId"]);
+  $prepare->bindParam(":nombre",$_POST["txtNombre"]);
+  $prepare->bindParam(":email",$_POST["txtEmail"]);
+  $prepare->bindParam(":password",$_POST["txtContrasena"]);
+  if ($prepare->execute()) {
     echo "correcto";
   }
   else {
