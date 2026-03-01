@@ -268,21 +268,32 @@ document.getElementById("selectCapa").addEventListener("change", function(){
             { opacity: 1 }
         ).addTo(mapa);
 
+        if(ultimosDatosClima){
+            mostrarInfoPorCapa(ultimosDatosClima, ultimosDatosAire, capa);
+        }
+
     
 });
 
-//Obtener datos del clima
-function obtenerDatosClima(lat, lng){
-    
+
+// Variable global para guardar los últimos datos
+let ultimosDatosClima = null;
+let ultimosDatosAire = null;
+
+function obtenerDatosClima(lat, lng) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}&units=metric&lang=es`)
-    .then(r => r.json())
-    .then(data => mostrarInfo(data, lng, lat));
+        .then(r => r.json())
+        .then(data => {
+            ultimosDatosClima = data; // Guardar
+            mostrarInfoPorCapa(ultimosDatosClima, ultimosDatosAire, capa);
+        });
 
     fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lng}&appid=${apiKey}`)
-    .then(r => r.json())
-    .then(data => calidadAire(data));
-
-    }
+        .then(r => r.json())
+        .then(data => {
+            ultimosDatosAire = data; // Guardar
+        });
+}
 
     function mostrarInfo(data, lng, lat){
         document.getElementById("contenidoInfo").innerHTML = `
@@ -328,6 +339,65 @@ function cargarMarcadoresMapa() {
                  .bindPopup(`${ciudad.nombre}, ${ciudad.pais}`);
             });
         });
+}
+
+function mostrarInfoPorCapa(datosClima, datosAire, capaActual) {
+    let html = `<h5>${datosClima.name}, ${datosClima.sys.country}</h5>`;
+
+    switch(capaActual) {
+        case "temp_new":
+            html += `
+                <p><strong>🌡️ Temperatura:</strong> ${datosClima.main.temp} °C</p>
+                <p><strong>Sensación térmica:</strong> ${datosClima.main.feels_like} °C</p>
+                <p><strong>Mínima:</strong> ${datosClima.main.temp_min} °C</p>
+                <p><strong>Máxima:</strong> ${datosClima.main.temp_max} °C</p>
+            `;
+            break;
+
+        case "wind_new":
+            html += `
+                <p><strong>💨 Velocidad:</strong> ${datosClima.wind.speed} m/s</p>
+                <p><strong>Dirección:</strong> ${datosClima.wind.deg}°</p>
+                ${datosClima.wind.gust ? `<p><strong>Ráfagas:</strong> ${datosClima.wind.gust} m/s</p>` : ""}
+            `;
+            break;
+
+        case "pressure_new":
+            html += `
+                <p><strong>🔵 Presión:</strong> ${datosClima.main.pressure} hPa</p>
+                <p><strong>Presión a nivel del mar:</strong> ${datosClima.main.sea_level ?? "N/A"} hPa</p>
+                <p><strong>Presión suelo:</strong> ${datosClima.main.grnd_level ?? "N/A"} hPa</p>
+            `;
+            break;
+
+        case "clouds_new":
+            html += `
+                <p><strong>☁️ Nubosidad:</strong> ${datosClima.clouds.all} %</p>
+                <p><strong>Clima:</strong> ${datosClima.weather[0].description}</p>
+                ${datosClima.visibility ? `<p><strong>Visibilidad:</strong> ${datosClima.visibility / 1000} km</p>` : ""}
+            `;
+            break;
+
+        case "precipitation_new":
+            html += `
+                <p><strong>🌧️ Clima:</strong> ${datosClima.weather[0].description}</p>
+                <p><strong>Humedad:</strong> ${datosClima.main.humidity} %</p>
+                ${datosClima.rain ? `<p><strong>Lluvia 1h:</strong> ${datosClima.rain["1h"] ?? 0} mm</p>` : "<p>Sin lluvia registrada</p>"}
+                ${datosClima.snow ? `<p><strong>Nieve 1h:</strong> ${datosClima.snow["1h"] ?? 0} mm</p>` : ""}
+            `;
+            break;
+
+        default: // Sin capa o general
+            html += `
+                <p><strong>Clima:</strong> ${datosClima.weather[0].description}</p>
+                <p><strong>Temperatura:</strong> ${datosClima.main.temp} °C</p>
+                <p><strong>Humedad:</strong> ${datosClima.main.humidity} %</p>
+                <p><strong>Viento:</strong> ${datosClima.wind.speed} m/s</p>
+            `;
+    }
+
+    document.getElementById("contenidoInfo").innerHTML = html;
+    document.getElementById("panelInfo").style.display = "block";
 }
 
     
