@@ -48,9 +48,8 @@ $conn = new Conexion(array(
 
 //Listar todas las ciudades
 if (isset($_GET["ciudad"]) && !isset($_GET["id"])) {
-    $select = $conn->select("ciudades", "id_ciudad, nombre, pais, latitud, longitud");
-
-    $select ->orderBy("nombre", "ASC");
+   $select = $conn->select("view_ciudades", "*");
+   $select->orderBy("nombre", "ASC");
     try {
         $datos = $select->execute();
     } catch (Exception $e) {
@@ -65,52 +64,36 @@ if (isset($_GET["ciudad"]) && !isset($_GET["id"])) {
 
 
 if (isset($_GET["ciudad"]) && isset($_GET["id"])) {
-    $id = $_GET["id"];
-    
-    $query = $conn->select("ciudades", "id_ciudad, nombre, pais, latitud, longitud");
-    $query->where("id_ciudad", "=", $id); 
-    
-    try {
-        $datos = $query->execute(); 
-    } catch (Exception $e) {
-        header("Content-Type: application/json");
-        echo json_encode(["error" => "Error querying city: " . $e->getMessage()]);
-        exit;
-    }
-
-    header("Content-Type: application/json");
-    if ($datos && isset($datos[0])) {
-        echo json_encode($datos[0]);
-    } else {
-        echo json_encode(["error" => "No encontrado"]);
-    }
+    $id = intval($_GET["id"]);
+try{
+    $datos = $conn->query("CALL obtener_ID_ciudad($id)")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    echo json_encode(["error" => $e->getMessage()]);
     exit;
 }
+header("Content-Type: application/json");
+    echo json_encode($datos[0] ?? ["error" => "No encontrado"]);
+    exit;
+}
+    
+   
 
-if(isset($_GET["editarCiudad"])){
-    $id       = $_POST["id_ciudad"];
+if (isset($_GET["editarCiudad"])) {
+    $id       = $_POST["id_ciudad"]; 
     $nombre   = $_POST["nombre"];
     $pais     = $_POST["pais"];
     $latitud  = $_POST["latitud"];
     $longitud = $_POST["longitud"];
 
-    
-    $update = $conn->update("ciudades");
-
-    $update->set("nombre", $nombre);
-    $update->set("pais", $pais);
-    $update->set("latitud", $latitud);
-    $update->set("longitud", $longitud);
-
-    $update->where("id_ciudad", "=", $id);
-
-    $resultado = $update->execute();
+    try {
+        $conn->query("CALL editar_ciudad($id, '$nombre', '$pais', $latitud, $longitud)");
+        $resultado = true;
+    } catch (Exception $e) {
+        $resultado = false;
+    }
 
     header("Content-Type: application/json");
-   
-    echo json_encode([
-        "success" => ($resultado !== false)
-    ]);
+    echo json_encode(["success" => $resultado]);
     exit;
 }
 
@@ -121,19 +104,33 @@ if(isset($_GET["nuevaCiudad"])){
     $longitud = $_POST["longitud"];
 
    
-    $insert = $conn->insert("ciudades", "nombre, pais, latitud, longitud");
-    
-    $insert->value($nombre);
-    $insert->value($pais);
-    $insert->value($latitud);
-    $insert->value($longitud);
-
-    $resultado = $insert->execute();
+   try {
+    $conn->query("CALL nueva_ciudad('$nombre', '$pais', $latitud, $longitud)");
+    $resultado = true;
+   } catch (Exception $e){
+    $resultado = false;
+   }
 
     header("Content-Type: application/json");
-    
+   
     echo json_encode([
-        "success" => ($resultado !== false)
+        "success" => $resultado
     ]);
+    exit;
+   }
+
+   if (isset($_GET["ciudadesUbicacion"])) {
+    $select = $conn->select("vista_ciudades_con_ubicacion", "*");
+
+    try {
+        $datos = $select->execute();
+    } catch (Exception $e) {
+        header("Content-Type: application/json");
+        echo json_encode(["error" => $e->getMessage()]);
+        exit;
+    }
+
+    header("Content-Type: application/json");
+    echo json_encode($datos);
     exit;
 }
