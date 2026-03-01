@@ -41,15 +41,14 @@ if (isset($_GET["obtener_preferencias"])) {
     if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
         echo json_encode([
             'unidad_temperatura' => 'Celsius',
-            'tema' => 'claro',
             'logueado' => false
         ]);
         exit;
     }
 
     $stmt = $db->ejecutar(
-        "SELECT unidad_temperatura, tema
-         FROM preferencias_usuario
+        "SELECT id_usuario, nombre, preferencias
+         FROM vista_preferencias_completo
          WHERE id_usuario = ?",
         [$_SESSION['id_usuario']]
     );
@@ -57,8 +56,9 @@ if (isset($_GET["obtener_preferencias"])) {
     $pref = $stmt->fetch(PDO::FETCH_ASSOC);
 
     echo json_encode([
-        'unidad_temperatura' => $pref['unidad_temperatura'] ?? 'Celsius',
-        'tema' => $pref['tema'] ?? 'claro',
+        'id_usuario' => $pref['id_usuario'] ?? null,
+        'nombre' => $pref['nombre'] ?? null,
+        'preferencias' => $pref['preferencias'] ?? null,
         'logueado' => true
     ]);
     exit;
@@ -70,10 +70,10 @@ elseif (isset($_GET["preferencias"])) {
 
     $stmt = $db->ejecutar(
         "SELECT 
-            id_preferencia,
-            unidad_temperatura,
-            tema
-         FROM preferencias_usuario"
+            id_usuario,
+            nombre,
+            preferencias
+         FROM vista_preferencias_completo"
     );
 
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));

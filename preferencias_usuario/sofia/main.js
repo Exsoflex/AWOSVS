@@ -77,9 +77,9 @@ function buscarPreferencias() {
 
       $("#tbodyProductos").append(`
         <tr>
-          <td>${pref.id_preferencia}</td>
-          <td>${pref.unidad_temperatura}</td>
-          <td>${pref.tema}</td>
+          <td>${pref.id_usuario}</td>
+          <td>${pref.nombre}</td>
+          <td>${pref.preferencias}</td>
         </tr>
       `)
     }
