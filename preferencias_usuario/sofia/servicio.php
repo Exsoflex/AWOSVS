@@ -31,7 +31,15 @@ if (isset($_GET["DATETIME"])) {
 }
 
 require "conexion.php";
-$db = new Conexion();
+
+$con = new Conexion(array(
+  "tipo"       => "mysql",
+  "servidor"   => "46.28.42.226",
+  "bd"         => "u760464709_24005224_bd",
+  "usuario"    => "u760464709_24005224_usr",
+  "contrasena" => "8PEd!gd5x+Sb"
+));
+
 //////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////
@@ -46,7 +54,7 @@ if (isset($_GET["obtener_preferencias"])) {
         exit;
     }
 
-    $stmt = $db->ejecutar(
+    $stmt = $con->ejecutar(
         "SELECT id_usuario, nombre, preferencias
          FROM vista_preferencias_completo
          WHERE id_usuario = ?",
@@ -67,17 +75,11 @@ if (isset($_GET["obtener_preferencias"])) {
 ////////////////////////////////////////////////////
 // MOSTRAR TABLA DE PREFERENCIAS
 elseif (isset($_GET["preferencias"])) {
+  $select = $con->select("vista_preferencias_completo");
+    
+  header("Content-Type: application/json");
+  echo json_encode($select->execute());
 
-    $stmt = $db->ejecutar(
-        "SELECT 
-            id_usuario,
-            nombre,
-            preferencias
-         FROM vista_preferencias_completo"
-    );
-
-    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-    exit;
 }
 
 //////////////////////////////////
@@ -93,14 +95,14 @@ elseif (isset($_GET["guardar_preferencias"])) {
     $tema = ($_POST['tema'] === 'oscuro') ? 'oscuro' : 'claro';
     
     // Verificar si ya existen preferencias
-    $stmt = $db->ejecutar(
+    $stmt = $con->ejecutar(
         "SELECT id_usuario FROM preferencias_usuario WHERE id_usuario = ?",
         [$_SESSION['id_usuario']]
     );
     
     if($stmt->rowCount() > 0) {
         // Actualizar
-        $db->ejecutar(
+        $con->ejecutar(
             "UPDATE preferencias_usuario 
              SET unidad_temperatura = ?, tema = ? 
              WHERE id_usuario = ?",
@@ -109,7 +111,7 @@ elseif (isset($_GET["guardar_preferencias"])) {
         echo "correcto";
     } else {
         // Insertar
-        $db->ejecutar(
+        $con->ejecutar(
             "INSERT INTO preferencias_usuario 
              (id_usuario, unidad_temperatura, tema) 
              VALUES (?, ?, ?)",
@@ -120,4 +122,49 @@ elseif (isset($_GET["guardar_preferencias"])) {
     exit;
 }
 
-?>
+
+// ELIMINAR PREFERENCIAS DE UN USUARIO
+elseif (isset($_GET["eliminarpreferencia"])) {
+
+    if (!isset($_POST["id_usuario"]) || empty($_POST["id_usuario"])) {
+        echo "Falta id_usuario";
+        exit;
+    }
+
+    $idUsuario = $_POST["id_usuario"];
+
+    // Usando tu método ejecutar()
+    $stmt = $con->ejecutar(
+        "DELETE FROM preferencias_usuario WHERE id_usuario = ?",
+        [$idUsuario]
+    );
+
+    // Comprobar si se borró algo
+    if ($stmt->rowCount() > 0) {
+        echo "correcto";
+    } else {
+        echo "error";
+    }
+
+    exit;
+}
+/////////////////////////////////
+
+
+elseif (isset($_GET["agregar_preferencia_sp"])) {
+
+    $prepare = $con->prepare("CALL insertar_preferencias(:p_id_usuario, :p_unidad_temperatura, :p_tema)");
+
+    $prepare->bindParam(":p_id_usuario", $_POST["id_usuario"]);
+    $prepare->bindParam(":p_unidad_temperatura", $_POST["unidad"]);
+    $prepare->bindParam(":p_tema", $_POST["tema"]);
+    
+    $prepare->execute();
+
+    echo "correcto";
+}
+
+
+
+
+?>      
