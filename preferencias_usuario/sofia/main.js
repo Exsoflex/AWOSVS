@@ -80,8 +80,62 @@ function buscarPreferencias() {
           <td>${pref.id_usuario}</td>
           <td>${pref.nombre}</td>
           <td>${pref.preferencias}</td>
+     <td><button class="btn btn-danger btn-eliminar" data-id="${pref.id_usuario}">Eliminar</button></td>
         </tr>
       `)
     }
   }, "json")   
 }
+
+
+$(document).on("click", ".btn-eliminar", function () {
+
+    const idUsuario = $(this).data("id")
+
+    if (!confirm("¿Deseas eliminar las ciudades favoritas de este usuario?")) {
+        return
+    }
+
+    $.post("servicio.php?eliminarpreferencia", {
+        id_usuario: idUsuario
+    }, function (respuesta) {
+        if (respuesta === "correcto") {
+            alert("Preferencias eliminadas")
+            buscarPreferencias()
+            conn.send("buscar-usuarios")
+        }
+        else if (respuesta === "error") {
+            alert("Este usuario no cuenta con preferencias para eliminar")
+        }
+    })
+})
+
+
+/////////////
+$("#formAgregarUsuario").submit(function (event) {
+    event.preventDefault();
+
+    const idUsuario = $("#id_usuario").val();
+    const unidad = $('input[name="unidad"]:checked').val();
+    const tema = $('input[name="tema"]:checked').val();
+
+    $.post("servicio.php?agregar_preferencia_sp", {
+        id_usuario: idUsuario,
+        unidad: unidad,
+        tema: tema
+    }, function(respuesta) {
+        if (respuesta === "correcto") {
+            alert("Preferencias agregadas correctamente");
+            buscarPreferencias(); 
+            $("#formAgregarUsuario")[0].reset(); // opcional: limpiar formulario
+        } else {
+            alert("Error al agregar preferencias");
+        }
+    });
+});
+
+
+
+
+
+

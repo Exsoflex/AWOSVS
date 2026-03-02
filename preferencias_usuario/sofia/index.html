@@ -59,6 +59,37 @@
   </div>
   <!--  -->
 </div>
+
+<div class="container mt-5">
+    <h2>Agregar Preferencias</h2>
+    <form id="formAgregarUsuario" method="POST" class="p-4 border rounded">
+
+        <div class="mb-3">
+            <label for="id_usuario" class="form-label">ID Usuario</label>
+            <input type="number" class="form-control" id="id_usuario" name="id_usuario" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Unidad de temperatura</label><br>
+            <input type="radio" name="unidad" value="Celsius" checked> Celsius
+            <input type="radio" name="unidad" value="Fahrenheit"> Fahrenheit
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Tema</label><br>
+            <input type="radio" name="tema" value="claro" checked> Claro
+            <input type="radio" name="tema" value="oscuro"> Oscuro
+        </div>
+
+        <button type="submit" id="btnAgregar" class="btn btn-success">Agregar Preferencias</button>
+    </form>
+
+
+
+
+
+
+
     <div class="container text-center mt-5">
         <h1>CLIMA</h1>
         <p>clic en el icono de la esquina superior izquierda para configurar tus preferencias.</p>
@@ -68,6 +99,8 @@
                     <th>id_usuario</th>
                     <th>nombre</th>
                     <th>preferencias</th>
+                       <th>Accion</th>
+
                 </tr>
             </thead>
             <tbody id="tbodyProductos">
