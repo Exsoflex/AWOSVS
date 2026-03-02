@@ -37,8 +37,9 @@
             </div>
             <div class="mb-1">
                 <label>Filtrar por:</label>
-                <select id="cboPopulares" name="" class="form-select">
-                    <option value="">Selecciona alguna opción</option>
+                <select id="cboPopulares" class="form-select">
+                    <option value="usuarios">Usuarios con Favoritos</option>
+                    <option value="populares">Ciudades Populares</option>
                 </select>
             </div>
 
@@ -55,15 +56,16 @@
                 <tr>
                     <th>Id</th>
                     <th>Usuario</th>
-                    <th>Ciudad(es) Favoritas</th>
-                    <th>Total de favoritos</th>
-
+                    <th id="tituloCiudades">Ciudad(es) Favoritas</th>
+                    <th id="tituloTotal">Total de favoritos</th>
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody id="tbodyProductos">
             </tbody>
         </table>
+
+
         <a href="/AWOSVS/main/index.html" class="btn btn-dark" style="align-items: center;">Regresar al menú
             principal</a>
     </div>

@@ -108,10 +108,11 @@ elseif (isset($_GET["eliminarFavorito"])) {
     exit;
   }
 
-  $delete = $con->delete("favoritos");
-  $delete->where("id_usuario", "=", $_POST["id_usuario"]);
+  $prepare = $con->prepare("CALL eliminarFavoritos(:usuario)");
 
-  if ($delete->execute()) {
+  $prepare->bindParam(":usuario", $_POST["id_usuario"]);
+
+  if ($prepare->execute()) {
     echo "correcto";
   } else {
     echo "error";
@@ -144,11 +145,12 @@ elseif (isset($_GET["eliminarFavorito"])) {
     exit;
   }
 
-  $insert = $con->insert("favoritos", "id_usuario, id_ciudad");
-  $insert->value($_POST["id_usuario"]);
-  $insert->value($_POST["id_ciudad"]);
+  $prepare = $con->prepare("CALL insertarFavorito(:usuario, :ciudad)");
 
-  if ($insert->execute()) {
+  $prepare->bindParam(":usuario", $_POST["id_usuario"]);
+  $prepare->bindParam(":ciudad", $_POST["id_ciudad"]);
+
+  if ($prepare->execute()) {
     echo "correcto";
   } else {
     echo "error";
@@ -162,7 +164,17 @@ elseif (isset($_GET["eliminarFavorito"])) {
 
   header("Content-Type: application/json");
   echo json_encode($select->execute());
-}
+} elseif (isset($_GET["ciudadesPopulares"])) {
 
+  $select = $con->select(
+    "view_ciudades_populares",
+    "*"
+
+  );
+
+
+  header("Content-Type: application/json");
+  echo json_encode($select->execute());
+}
 
 ?>
