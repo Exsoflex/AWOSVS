@@ -57,9 +57,9 @@ $(document).on("click", ".btn-eliminar", function () {
     }, function (respuesta) {
 
         if (respuesta === "correcto") {
-            alert("Consulta eliminada correctamente");
             consultas();
-        } else {
+            conn.send("actualizar-consultas");
+        }else {
             alert("Error al eliminar");
         }
     });
@@ -111,9 +111,9 @@ $("#frmConsulta").submit(function (event) {
     $.post(url, $(this).serialize(), function (respuesta) {
         console.log(respuesta);
         if (respuesta === "correcto") {
-            alert("Guardado correctamente");
             $("#frmConsulta")[0].reset();
             consultas();
+            conn.send("actualizar-consultas");
         } else {
             alert("Error al guardar");
         }
@@ -135,3 +135,22 @@ $(document).on("click", ".btn-editar", function () {
         $("#txtDescripcion").val(c.descripcion);
     });
 });
+
+const conn = new WebSocket("ws://localhost:8080/chat");
+
+conn.onopen = function () {
+    console.log("Conectado al WebSocket correctamente");
+};
+
+conn.onmessage = function (e) {
+    const data = e.data;
+    console.log("Mensaje recibido:", data);
+
+    if (data === "actualizar-consultas") {
+        consultas();
+
+        const toastElement = document.getElementById("liveToast");
+        const toast = bootstrap.Toast.getOrCreateInstance(toastElement);
+        toast.show();
+    }
+};
