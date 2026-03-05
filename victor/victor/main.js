@@ -138,3 +138,49 @@ conn.onmessage = function (e) {
 conn.onopen = function (e) {
     console.log("Conexión websocket correcta")
 }
+function buscarCiudadesPopulares() {
+    $.get("servicio.php?ciudadesPopulares", function (ciudades) {
+
+        $("#tbodyProductos").html("")
+
+        for (let x in ciudades) {
+            const ciudad = ciudades[x]
+
+            $("#tbodyProductos").append(`
+                <tr>
+                    <td>${ciudad.id}</td>
+                    <td>${ciudad.ciudad}</td>
+                    <td>${ciudad.total_favoritos}</td>
+                </tr>
+            `)
+        }
+    })
+}
+$("#cboPopulares").change(function () {
+
+    const opcion = $(this).val()
+
+    if (opcion === "usuarios") {
+
+        $(".table th, .table td").show()
+
+        $("#tituloCiudades").text("Ciudad(es) Favoritas")
+        $("#tituloTotal").text("Total de ciudades favoritas")
+            -
+
+            buscarUsuarios()
+    }
+
+    if (opcion === "populares") {
+
+        buscarCiudadesPopulares()
+
+        $("#tituloCiudades").text("Ciudades Más Populares")
+        $("#tituloTotal").text("Total")
+
+        $(".table th:nth-child(2)").hide()
+
+        $(".table th:nth-child(5)").hide()
+    }
+
+})
