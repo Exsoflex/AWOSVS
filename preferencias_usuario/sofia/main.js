@@ -88,11 +88,11 @@ function buscarPreferencias() {
 }
 
 
-$(document).on("click", ".btn-eliminar", function () {
+$(document).on("click", ".btn-eliminar", function (event) {
 
     const idUsuario = $(this).data("id")
 
-    if (!confirm("¿Deseas eliminar las ciudades favoritas de este usuario?")) {
+    if (!confirm("¿Deseas eliminar las preferencias de este usuario?")) {
         return
     }
 
@@ -102,36 +102,69 @@ $(document).on("click", ".btn-eliminar", function () {
         if (respuesta === "correcto") {
             alert("Preferencias eliminadas")
             buscarPreferencias()
-            conn.send("buscar-usuarios")
+           
         }
         else if (respuesta === "error") {
-            alert("Este usuario no cuenta con preferencias para eliminar")
+            alert(":(")
         }
     })
 })
 
 
 /////////////
-$("#formAgregarUsuario").submit(function (event) {
+$("#formAgregarPreferencias").submit(function (event) {
     event.preventDefault();
 
-    const idUsuario = $("#id_usuario").val();
-    const unidad = $('input[name="unidad"]:checked').val();
-    const tema = $('input[name="tema"]:checked').val();
+const idUsuario = $("#txtusuario").val();
+const unidad = $('#formAgregarPreferencias input[name="unidad"]:checked').val();
+const tema = $('#formAgregarPreferencias input[name="tema"]:checked').val();
 
     $.post("servicio.php?agregar_preferencia_sp", {
         id_usuario: idUsuario,
         unidad: unidad,
         tema: tema
     }, function(respuesta) {
+        
         if (respuesta === "correcto") {
             alert("Preferencias agregadas correctamente");
             buscarPreferencias(); 
-            $("#formAgregarUsuario")[0].reset(); // opcional: limpiar formulario
+            $("#formAgregarPreferencias")[0].reset(); 
         } else {
             alert("Error al agregar preferencias");
         }
     });
+});
+
+
+
+
+
+$("#btnModificar").click(function (event) {
+    event.preventDefault();
+
+    const idUsuario = $("#txtusuario").val();
+    const unidad = $('#formAgregarPreferencias input[name="unidad"]:checked').val();
+    const tema = $('#formAgregarPreferencias input[name="tema"]:checked').val();
+
+    $.post("servicio.php?modificar_preferencia", {
+        id_usuario: idUsuario,
+        unidad: unidad,
+        tema: tema
+    }, function (respuesta) {
+
+        if (respuesta === "correcto") {
+            alert("Preferencias modificadas correctamente");
+            buscarPreferencias();
+            $("#formAgregarPreferencias")[0].reset();
+
+        } else {
+
+            alert("Error al modificar preferencias");
+
+        }
+
+    });
+
 });
 
 
