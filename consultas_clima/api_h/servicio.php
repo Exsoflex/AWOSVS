@@ -36,20 +36,20 @@ if (isset($_GET["DATETIME"])) {
 
 require "conexion.php";
 require "enviarCorreo.php";
-
+/*
 $con = new Conexion(array(
   "tipo"       => "mysql",
   "servidor"   => "46.28.42.226",
   "bd"         => "u760464709_24005224_bd",
   "usuario"    => "u760464709_24005224_usr",
   "contrasena" => "8PEd!gd5x+Sb"
-));
+));*/
 
-/*
+
 $con = new Conexion(array(
   "tipo"       => "mysql",
   "servidor"   => "localhost",
-  "bd"         => "clima_app",
+  "bd"         => "clima_db",
   "usuario"    => "root",
   "contrasena" => ""
 ));
@@ -80,7 +80,7 @@ elseif (isset($_GET["consultas"])) {
     );
 
         if (!empty($_GET["buscar"])) {
-            $select->where("descripcion", "LIKE", $_GET["buscar"]);
+            $select->where("descripcion", "LIKE", "%" . $_GET["buscar"] . "%");
         }
 
         $select->orderby("id_consulta DESC");
@@ -98,11 +98,11 @@ elseif (isset($_GET["eliminarConsulta"])) {
     $sql = "CALL eliminarConsulta(:id, @eliminado)";
     $stmt = $con->prepare($sql);
 
-    $stmt->execute([
-        ':id' => $id
-    ]);
-
+    if ($stmt->execute([':id' => $id])) {
     echo "correcto";
+    } else {
+        echo "error";
+    }
 }
 
 elseif (isset($_GET["ciudadesCombo"])) {
@@ -130,15 +130,17 @@ elseif (isset($_GET["agregarConsulta"])) {
     $ciudad = $_POST["cboCiudad"];
     $temperatura = $_POST["txtTemperatura"];
     $descripcion = $_POST["txtDescripcion"];
+    $humedad = $_POST["txtHumedad"]; 
 
-    $sql = "CALL agregarConsulta(:usuario, :ciudad, :temp, :descripcion, @nuevoId, @tempOut, @descOut)";
+    $sql = "CALL agregarConsulta(:usuario, :ciudad, :temp, :descripcion, :humedad, @nuevoId, @tempOut, @descOut, @humOut)";
     $stmt = $con->prepare($sql);
 
     $stmt->execute([
         ':usuario' => $usuario,
         ':ciudad' => $ciudad,
         ':temp' => $temperatura,
-        ':descripcion' => $descripcion
+        ':descripcion' => $descripcion,
+        ':humedad' => $humedad
     ]);
 
     echo "correcto";
@@ -148,7 +150,7 @@ elseif (isset($_GET["agregarConsulta"])) {
 
 elseif (isset($_GET["obtenerConsulta"])) {
 
-    $select = $con->select("consultas_clima", "*");
+    $select = $con->select("view_consultas_detalle", "*");
     $select->where("id_consulta", "=", $_GET["id"]);
 
     header("Content-Type: application/json");
@@ -164,21 +166,26 @@ elseif (isset($_GET["modificarConsulta"])) {
     $ciudad = $_POST["cboCiudad"];
     $temperatura = $_POST["txtTemperatura"];
     $descripcion = $_POST["txtDescripcion"];
+    $humedad = $_POST["txtHumedad"];
 
-    $sql = "CALL modificarConsulta(:id, :usuario, :ciudad, :temp, :descripcion, 
-            @idMod, @userMod, @cityMod, @tempMod, @descMod)";
+    $sql = "CALL modificarConsulta(:id, :usuario, :ciudad, :temp, :descripcion, :humedad, 
+            @idMod, @userMod, @cityMod, @tempMod, @descMod, @humMod)";
 
     $stmt = $con->prepare($sql);
 
-    $stmt->execute([
-        ':id' => $id,
-        ':usuario' => $usuario,
-        ':ciudad' => $ciudad,
-        ':temp' => $temperatura,
-        ':descripcion' => $descripcion
-    ]);
-
-    echo "correcto";
+    if ($stmt->execute([
+    ':id' => $id,
+    ':usuario' => $usuario,
+    ':ciudad' => $ciudad,
+    ':temp' => $temperatura,
+    ':descripcion' => $descripcion,
+    ':humedad' => $humedad
+    ])) {
+        $stmt->closeCursor(); // 🔥 importante
+        echo "correcto";
+    } else {
+        print_r($stmt->errorInfo()); // 🔥 AQUI VERAS EL ERROR REAL
+    }
 }
 
 ?>

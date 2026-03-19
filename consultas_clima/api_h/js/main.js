@@ -18,6 +18,7 @@ function consultas(busqueda = "") {
                     <td>${c.pais}</td>
                     <td>${c.temperatura}°C</td>
                     <td>${c.descripcion}</td>
+                    <td>${c.humedad}%</td>
                     <td>${c.fecha_consulta}</td>
                     <td>
                         <button class="btn btn-outline-secondary btn-sm btn-eliminar" data-id="${c.id_consulta}">
@@ -108,6 +109,8 @@ $("#frmConsulta").submit(function (event) {
         url = "api_h/servicio.php?modificarConsulta";
     }
 
+    console.log($(this).serialize());
+    
     $.post(url, $(this).serialize(), function (respuesta) {
         console.log(respuesta);
         if (respuesta === "correcto") {
@@ -128,11 +131,14 @@ $(document).on("click", ".btn-editar", function () {
     $.get("api_h/servicio.php?obtenerConsulta", { id: id }, function (datos) {
         const c = datos[0];
 
+        console.log("DATOS CONSULTA:", c);
+
         $("#txtIdConsulta").val(c.id_consulta);
         $("#cboUsuario").val(c.id_usuario);
         $("#cboCiudad").val(c.id_ciudad);
         $("#txtTemperatura").val(c.temperatura);
         $("#txtDescripcion").val(c.descripcion);
+        $("#txtHumedad").val(c.humedad);
     });
 });
 
