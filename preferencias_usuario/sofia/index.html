@@ -62,11 +62,11 @@
 
 <div class="container mt-5">
     <h2>Agregar Preferencias</h2>
-    <form id="formAgregarUsuario" method="POST" class="p-4 border rounded">
+    <form id="formAgregarPreferencias" method="POST" class="p-4 border rounded">
 
         <div class="mb-3">
-            <label for="id_usuario" class="form-label">ID Usuario</label>
-            <input type="number" class="form-control" id="id_usuario" name="id_usuario" required>
+            <label for="txtusuario" class="form-label">ID Usuario</label>
+            <input type="number" class="form-control" id="txtusuario" name="txtusuario" required>
         </div>
 
         <div class="mb-3">
@@ -82,7 +82,9 @@
         </div>
 
         <button type="submit" id="btnAgregar" class="btn btn-success">Agregar Preferencias</button>
-    </form>
+        <button type="submit" id="btnModificar" class="btn btn-warning">Modificar Preferencias</button>
+
+      </form>
 
 
 

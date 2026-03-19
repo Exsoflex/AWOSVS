@@ -82,7 +82,25 @@ elseif (isset($_GET["preferencias"])) {
 
 }
 
-//////////////////////////////////
+/////////////////////////////////ELIMINAR PREFERENCIAS DE UN USUARIO
+elseif (isset($_GET["eliminarpreferencia"])) {
+    $idUsuario = $_POST["id_usuario"];
+       $prepare = $con->prepare("CALL eliminar_preferencias (:p_id_usuario)");
+      $prepare->bindParam(":p_id_usuario", $idUsuario);    
+
+    // Comprobar si se borró algo
+   $prepare->execute();
+
+      if ($prepare->rowCount() > 0) {
+        echo "correcto";
+     } 
+      else {
+      echo "error";
+    }
+
+    exit;
+}
+/////////////////////////////////
 // GUARDAR PREFERENCIAS
 elseif (isset($_GET["guardar_preferencias"])) {
     
@@ -95,12 +113,10 @@ elseif (isset($_GET["guardar_preferencias"])) {
     $tema = ($_POST['tema'] === 'oscuro') ? 'oscuro' : 'claro';
     
     // Verificar si ya existen preferencias
-    $stmt = $con->ejecutar(
-        "SELECT id_usuario FROM preferencias_usuario WHERE id_usuario = ?",
-        [$_SESSION['id_usuario']]
-    );
-    
-    if($stmt->rowCount() > 0) {
+$stmt = $con->ejecutar(
+    "SELECT id_usuario FROM preferencias_usuario WHERE id_usuario = ?",
+    [$_SESSION['id_usuario']]
+);    if($stmt->rowCount() > 0) {
         // Actualizar
         $con->ejecutar(
             "UPDATE preferencias_usuario 
@@ -123,33 +139,7 @@ elseif (isset($_GET["guardar_preferencias"])) {
 }
 
 
-// ELIMINAR PREFERENCIAS DE UN USUARIO
-elseif (isset($_GET["eliminarpreferencia"])) {
-
-    if (!isset($_POST["id_usuario"]) || empty($_POST["id_usuario"])) {
-        echo "Falta id_usuario";
-        exit;
-    }
-
-    $idUsuario = $_POST["id_usuario"];
-
-    // Usando tu método ejecutar()
-    $stmt = $con->ejecutar(
-        "DELETE FROM preferencias_usuario WHERE id_usuario = ?",
-        [$idUsuario]
-    );
-
-    // Comprobar si se borró algo
-    if ($stmt->rowCount() > 0) {
-        echo "correcto";
-    } else {
-        echo "error";
-    }
-
-    exit;
-}
-/////////////////////////////////
-
+/////eso lo del parcial 2
 
 elseif (isset($_GET["agregar_preferencia_sp"])) {
 
@@ -162,8 +152,22 @@ elseif (isset($_GET["agregar_preferencia_sp"])) {
     $prepare->execute();
 
     echo "correcto";
+    exit;
 }
 
+
+elseif (isset($_GET["modificar_preferencia"])) {
+    $prepare = $con->prepare("CALL actualizar_preferencias(:p_id_usuario, :p_unidad_temperatura, :p_tema)");
+
+    $prepare->bindParam(":p_id_usuario", $_POST["id_usuario"]);
+    $prepare->bindParam(":p_unidad_temperatura", $_POST["unidad"]);
+    $prepare->bindParam(":p_tema", $_POST["tema"]);
+
+    $prepare->execute();
+
+    echo "correcto";
+    exit;
+}
 
 
 
