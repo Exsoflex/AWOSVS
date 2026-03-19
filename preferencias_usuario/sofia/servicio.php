@@ -139,7 +139,7 @@ $stmt = $con->ejecutar(
 }
 
 
-
+/////eso lo del parcial 2
 
 elseif (isset($_GET["agregar_preferencia_sp"])) {
 
