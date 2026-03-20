@@ -1,73 +1,48 @@
-if (location.search == "?reload") {
-    window.location = "login.html"
+const API = "http://localhost/AWOSVS/main";
+
+// 🔥 NO mandar JWT si no existe o es inválido
+// 🔴 DESACTIVADO TEMPORALMENTE PARA LOGIN
+
+const token = localStorage.getItem("jwt");
+
+if (token) {
+    $.ajaxSetup({
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
 }
 
-// La URL de la API y endpoints cambialos según el tunnel, hosting, local o ubicación del proyecto de la aplicación web
-// URL de la API
-const API = "http://localhost/AWOSVS/main"
-// Añade a toda petición que se realice, el header que contiene el JWT, obtenido de un almacenamiento muy persistente
-$.ajaxSetup({
-    headers: {
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`
-    }
-})
+// Modal
+const modalErrorLogin = new bootstrap.Modal("#exampleModal");
 
-const modalErrorLogin = new bootstrap.Modal("#exampleModal", {
-    keyboard: false
-})
-
-// Endpoint combinado con la API para comprobar si se inició sesión
-$.get(`${API}/servicioInicioSesion.php?sesion`, function (sesion) {
-    if (sesion.length) {
-        // Si inició sesión
-
-        return
-    }
-
-    // Si no inició sesión
-    // Podrías añadir un redireccionamiento si lo crees prudente
-})
-
+// 🔍 Login
 $("#frmLogin").submit(function (event) {
-   console.log("Intentando iniciar sesión")
-    event.preventDefault()
+    event.preventDefault();
 
-    // Endpoint combinado con la API para iniciar sesión
+    console.log("Intentando iniciar sesión");
+    console.log("DATOS:", $(this).serialize());
+
     $.post(`${API}/servicioInicioSesion.php?iniciarSesion`, $(this).serialize(), function (respuesta) {
-           console.log("hola")
-        console.log(respuesta)
-        if (respuesta == "error") {
-            modalErrorLogin.show()
-            console.log("Error al iniciar sesión")
-            return
+
+        console.log("RESPUESTA:", respuesta);
+
+        if (respuesta === "error") {
+            modalErrorLogin.show();
+            return;
         }
-        console.log("Inicio de sesión exitoso")
 
-        // Guarda el JWT en un almacenamiento persistente
-        localStorage.setItem("jwt", respuesta)
-        // Cambia el redireccionamiento según tu aplicación web
-     //   window.location = "index.html"
-    })
-    .fail(function (error) {
-        console.log("Error al iniciar sesiónhhhhhh")
-    })
-})
+        if (respuesta === "error_bd" || respuesta === "error_conexion") {
+            console.log("Problema con la base de datos");
+            return;
+        }
 
+        console.log("Inicio de sesión exitoso");
 
-
-
-
-$.get(`${API}/servicioInicioSesion.php?sesion`, function (sesion) {
-    if (sesion.length) {
-        $("#btnCerrarSesion")
-        .show()
-        .css("visibility", "visible")
-
-        return
-    }
-
-    $("#btnIniciarSesion")
-    .show()
-    .css("visibility", "visible")
-
-})
+        // ✔ Guardar token limpio
+        localStorage.setItem("jwt", respuesta);
+        window.location = "index.html"
+    }).fail(function (error) {
+        console.log("ERROR AJAX:", error);
+    });
+});
