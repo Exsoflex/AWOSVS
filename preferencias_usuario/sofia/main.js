@@ -1,4 +1,15 @@
 $(document).ready(function() {
+
+    const token = localStorage.getItem("jwt");
+    if (token) {
+        $.ajaxSetup({
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    }
+
+
     obtenerPreferencias();
     buscarPreferencias();
     $('input[name="tema"]').change(function() {

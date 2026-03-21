@@ -1,91 +1,91 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inicio de Sesión</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-    }
-    .login-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      
-      padding: 2rem;
-      animation: fadeIn 1.3s ease-in-out;
-      width: 100%;
-    }
-    .login-card h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: #333;
-    }
-    .btn-primary {
-      background: #4facfe;
-      border: none;
-    }
-    .btn-primary:hover {
-      background: #00c6fb;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(-20px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-  </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inicio de Sesión</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            defer></script>
+
+    <!-- Tu JS -->
+    <script src="login.js" defer></script>
+
+    <!-- TU CSS -->
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-7 col-xl-6">
-        <div class="login-card">
-          <h2>Inicio de Sesión</h2>
-          <form id="frmLogin" method="POST">
-            <div class="mb-3">
-              <label for="txtUsuario" class="form-label">Usuario</label>
-              <input type="text" id="txtUsuario" name="txtUsuario" class="form-control" placeholder="Ingresa tu usuario">
-            </div>
-            <div class="mb-3">
-              <label for="txtContrasena" class="form-label">Contraseña</label>
-              <input type="password" id="txtContrasena" name="txtContrasena" class="form-control" placeholder="Ingresa tu contraseña">
-            </div>
-            <div class="d-flex justify-content-between">
-              <button type="reset" class="btn btn-secondary">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-danger text-white">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Error</h1>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Usuario o Contraseña incorrecto(s)
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Aceptar</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<body class="body-login">
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="login.js" defer></script>
+    <div class="container">
+        <div class="row justify-content-center">
+            
+            <div class="col-11 col-sm-10 col-md-6 col-lg-4">
+
+                <!-- AQUÍ SE USA TU ESTILO -->
+                <div class="login-card">
+                    <h2>Iniciar Sesión</h2>
+
+                    <form id="frmLogin" method="POST">
+
+                        <div class="mb-3">
+                            <label for="txtUsuario" class="form-label">Usuario</label>
+                            <input type="text" id="txtUsuario" name="txtUsuario" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="txtContrasena" class="form-label">Contraseña</label>
+                            <input type="password" id="txtContrasena" name="txtContrasena" class="form-control">
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary w-100 me-2">Iniciar Sesión</button>
+                            <button type="reset" class="btn btn-secondary w-100">Cancelar</button>
+                        </div>
+                         <a href="index.html" class="btn-cerrar">
+                                                ✕
+    <span class="tooltip-cerrar">Regresar sin login</span>
+                                            </a>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
+
+        
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                
+                <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Usuario o contraseña incorrectos
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
