@@ -1,5 +1,5 @@
 const API = "http://localhost/AWOSVS/main";
-
+const SERVICIO_PREF = "/AWOSVS/preferencias_usuario/sofia/servicio.php";
 
 const token = localStorage.getItem("jwt");
 
@@ -11,17 +11,12 @@ if (token) {
     });
 }
 
-
-// 🔍 Login
+// =============================================
+// LOGIN
 $("#frmLogin").submit(function (event) {
     event.preventDefault();
 
-    console.log("Intentando iniciar sesión");
-    console.log("DATOS:", $(this).serialize());
-
     $.post(`${API}/servicioInicioSesion.php?iniciarSesion`, $(this).serialize(), function (respuesta) {
-
-        console.log("RESPUESTA:", respuesta);
 
         if (respuesta === "error") {
             modalErrorLogin.show();
@@ -33,32 +28,41 @@ $("#frmLogin").submit(function (event) {
             return;
         }
 
-        console.log("Inicio de sesión exitoso");
-
-        // ✔ Guardar token limpio
         localStorage.setItem("jwt", respuesta);
-        window.location = "index.html"
+        window.location = "index.html";
+
     }).fail(function (error) {
         console.log("ERROR AJAX:", error);
     });
 });
 
-        console.log("Inicio de sesión exitoso");
+// BOTONES SESIÓN + TEMA EN TODAS LAS PÁGINAS
+document.addEventListener("DOMContentLoaded", function () {
 
-// botoens index
- document.addEventListener("DOMContentLoaded", function () {
+    // Preferencias - aplicar tema guardado solo si hay sesión activa
+    const token = localStorage.getItem("jwt");
+    const temaGuardado = localStorage.getItem("pref_tema");
+    if (token && temaGuardado) {
+        $('body').removeClass('claro oscuro').addClass(temaGuardado);
+    }
 
+    // Login - actualizar botones según sesión
     actualizarBotonesSesion();
 
     const btnCerrar = document.getElementById("btnCerrarSesion");
     if (btnCerrar) {
         btnCerrar.addEventListener("click", function () {
+            // Login - limpiar sesión
             localStorage.removeItem("jwt");
+            // Preferencias - limpiar tema al cerrar sesión
+            localStorage.removeItem("pref_tema");
+            localStorage.removeItem("pref_unidad");
             window.location = "login.html";
         });
     }
 });
 
+// Login - mostrar/ocultar botones según sesión
 function actualizarBotonesSesion() {
     const token = localStorage.getItem("jwt");
     const btnIniciar = document.getElementById("btnIniciarSesion");
@@ -74,3 +78,90 @@ function actualizarBotonesSesion() {
         btnCerrar.style.visibility  = "hidden";
     }
 }
+
+// =============================================
+// PREFERENCIAS - TEMA Y CARGA EN INDEX
+// =============================================
+function aplicarTema(tema) {
+    $('body').removeClass('claro oscuro').addClass(tema);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formPref = document.getElementById("formPreferencias");
+    if (!formPref) return; // solo corre en index
+
+    const token = localStorage.getItem("jwt");
+
+    if (token) {
+        // Preferencias - cargar desde BD si hay sesión
+        $.get(SERVICIO_PREF + "?obtener_preferencias", function (datos) {
+            if (datos.logueado) {
+                aplicarTema(datos.tema);
+                localStorage.setItem("pref_tema", datos.tema);
+                localStorage.setItem("pref_unidad", datos.unidad_temperatura);
+                $('input[name="tema"][value="' + datos.tema + '"]').prop("checked", true);
+                const unidadValor = datos.unidad_temperatura === "Celsius" ? "C" : "F";
+                $('input[name="unidad"][value="' + unidadValor + '"]').prop("checked", true);
+            }
+        }, "json");
+    } else {
+        // Preferencias - cargar desde localStorage si no hay sesión
+        const temaLocal   = localStorage.getItem("pref_tema");
+        const unidadLocal = localStorage.getItem("pref_unidad");
+        if (temaLocal) {
+            aplicarTema(temaLocal);
+            $('input[name="tema"][value="' + temaLocal + '"]').prop("checked", true);
+        }
+        if (unidadLocal) {
+            const unidadValor = unidadLocal === "Celsius" ? "C" : "F";
+            $('input[name="unidad"][value="' + unidadValor + '"]').prop("checked", true);
+        }
+    }
+
+    // Preferencias - cambio de tema en tiempo real
+    $('input[name="tema"]').change(function () {
+        aplicarTema($(this).val());
+    });
+
+    // Preferencias - guardar al dar clic en botón
+    $("#btnGuardar").click(function () {
+        const token = localStorage.getItem("jwt");
+        const unidad = $('input[name="unidad"]:checked').val() === "C" ? "Celsius" : "Fahrenheit";
+        const tema   = $('input[name="tema"]:checked').val();
+
+        if (!token) {
+            // Preferencias - guardar temporal en localStorage
+            localStorage.setItem("pref_unidad", unidad);
+            localStorage.setItem("pref_tema", tema);
+            $('#btnGuardar').text('¡Guardado!').removeClass('btn-primary').addClass('btn-success');
+            setTimeout(() => {
+                $('#btnGuardar').text('Guardar Cambios').removeClass('btn-success').addClass('btn-primary');
+            }, 2000);
+            return;
+        }
+
+        // Preferencias - guardar en BD si hay sesión
+        $.ajax({
+            url: SERVICIO_PREF + "?guardar_preferencias",
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            data: { unidad: unidad, tema: tema },
+            success: function (respuesta) {
+                if (respuesta === "correcto") {
+                    localStorage.setItem("pref_tema", tema);
+                    localStorage.setItem("pref_unidad", unidad);
+                    $('#btnGuardar').text('¡Guardado!').removeClass('btn-primary').addClass('btn-success');
+                    setTimeout(() => {
+                        $('#btnGuardar').text('Guardar Cambios').removeClass('btn-success').addClass('btn-primary');
+                    }, 2000);
+                } else {
+                    alert("Error al guardar: " + respuesta);
+                }
+            },
+            error: function(err) {
+                console.log("ERROR:", err);
+            }
+        });
+    });
+});

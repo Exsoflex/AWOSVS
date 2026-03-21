@@ -38,9 +38,8 @@ $con = new Conexion(array(
   "contrasena" => "8PEd!gd5x+Sb"
 ));
 
-// =============================================
 // VALIDAR JWT
-// =============================================
+
 $headers = getallheaders();
 $token = "";
 if (isset($headers["Authorization"])) {
@@ -59,12 +58,10 @@ catch (Exception $e) {
   $login = false;
   $id_usuario = null;
 }
+$esAdmin = $login && $tipo == "1";
+// endpoints
 
-// =============================================
-// ENDPOINTS
-// =============================================
-
-if (isset($_GET["usuarios"]) && $login) {
+if (isset($_GET["usuarios"]) && $esAdmin) {
   $select = $con->select("view_usr_busquedas");
   $select->orderby("id_usuario DESC");
   $select->limit(10);
@@ -72,7 +69,7 @@ if (isset($_GET["usuarios"]) && $login) {
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["editarUsuario"]) && $login) {
+elseif (isset($_GET["editarUsuario"]) && $esAdmin) {
   $id = $_GET["id"];
 
   $select = $con->select("usuarios", "*");
@@ -81,7 +78,7 @@ elseif (isset($_GET["editarUsuario"]) && $login) {
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["categoriasCombo"]) && $login) {
+elseif (isset($_GET["categoriasCombo"]) && $esAdmin) {
   $select = $con->select("categorias", "id AS value, nombre AS label");
   $select->orderby("nombre ASC");
   $select->limit(10);
@@ -95,7 +92,7 @@ elseif (isset($_GET["categoriasCombo"]) && $login) {
   header("Content-Type: application/json");
   echo json_encode($array);
 }
-elseif (isset($_GET["eliminarUsuario"]) && $login) {
+elseif (isset($_GET["eliminarUsuario"]) && $esAdmin) {
   $prepare = $con->prepare("CALL eliminarUsuario(:id_usuario)");
   $prepare->bindParam(":id_usuario", $_POST["txtId"]);
 
@@ -105,7 +102,7 @@ elseif (isset($_GET["eliminarUsuario"]) && $login) {
     echo "error";
   }
 }
-elseif (isset($_GET["agregarUsuario"]) && $login) {
+elseif (isset($_GET["agregarUsuario"]) && $esAdmin) {
   $prepare = $con->prepare("CALL insertarUsuario(:nombre, :email, :password)");
   $prepare->bindParam(":nombre", $_POST["txtNombre"]);
   $prepare->bindParam(":email", $_POST["txtEmail"]);

@@ -36,9 +36,6 @@ $con = new Conexion(array(
   "contrasena" => "8PEd!gd5x+Sb"
 ));
 
-// =============================================
-// VALIDAR JWT (igual que tu maestro)
-// =============================================
 $headers = getallheaders();
 $token = "";
 if (isset($headers["Authorization"])) {
@@ -48,7 +45,7 @@ if (isset($headers["Authorization"])) {
 try {
   $decoded = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key("Test12345-----------------------------------------------", "HS256"));
   $usuario = explode("/", $decoded->sub);
-  $id_usuario = $usuario[0];  // ← esto reemplaza $_SESSION['id_usuario']
+  $id_usuario = $usuario[0];
   $usr        = $usuario[1];
   $tipo       = $usuario[2];
   $login = true;
@@ -57,49 +54,37 @@ catch (Exception $e) {
   $login = false;
   $id_usuario = null;
 }
+$esAdmin = $login && $tipo == "1";
 
-// =============================================
-// ENDPOINTS
-// =============================================
-
-// OBTENER PREFERENCIAS
 if (isset($_GET["obtener_preferencias"]) && $login) {
 
-    $stmt = $con->ejecutar(
-        "SELECT id_usuario, nombre, preferencias
-         FROM vista_preferencias_completo
-         WHERE id_usuario = ?",
-        [$id_usuario]  
-    );
-
-    $pref = $stmt->fetch(PDO::FETCH_ASSOC);
+    $prepare = $con->prepare("SELECT unidad_temperatura, tema FROM preferencias_usuario WHERE id_usuario = :id");
+    $prepare->bindParam(":id", $id_usuario);
+    $prepare->execute();
+    $pref = $prepare->fetch(PDO::FETCH_ASSOC);
 
     header("Content-Type: application/json");
     echo json_encode([
-        'id_usuario'   => $pref['id_usuario']   ?? null,
-        'nombre'       => $pref['nombre']        ?? null,
-        'preferencias' => $pref['preferencias']  ?? null,
-        'logueado'     => true
+        'unidad_temperatura' => $pref['unidad_temperatura'] ?? 'Celsius',
+        'tema'               => $pref['tema'] ?? 'claro',
+        'logueado'           => true
     ]);
     exit;
 }
 
-// OBTENER PREFERENCIAS sin login → respuesta vacía
 elseif (isset($_GET["obtener_preferencias"]) && !$login) {
     header("Content-Type: application/json");
     echo json_encode(['unidad_temperatura' => 'Celsius', 'logueado' => false]);
     exit;
 }
 
-
-elseif (isset($_GET["preferencias"])&& $login) {
+elseif (isset($_GET["preferencias"]) && $esAdmin) {
     $select = $con->select("vista_preferencias_completo");
     header("Content-Type: application/json");
     echo json_encode($select->execute());
 }
 
-// ELIMINAR
-elseif (isset($_GET["eliminarpreferencia"]) && $login) {
+elseif (isset($_GET["eliminarpreferencia"]) && $esAdmin) {
     $idUsuario = $_POST["id_usuario"];
     $prepare = $con->prepare("CALL eliminar_preferencias(:p_id_usuario)");
     $prepare->bindParam(":p_id_usuario", $idUsuario);
@@ -109,34 +94,33 @@ elseif (isset($_GET["eliminarpreferencia"]) && $login) {
     exit;
 }
 
-// GUARDAR PREFERENCIAS
 elseif (isset($_GET["guardar_preferencias"]) && $login) {
 
     $unidad = ($_POST['unidad'] === 'Fahrenheit') ? 'Fahrenheit' : 'Celsius';
     $tema   = ($_POST['tema']   === 'oscuro')     ? 'oscuro'     : 'claro';
 
-    $stmt = $con->ejecutar(
-        "SELECT id_usuario FROM preferencias_usuario WHERE id_usuario = ?",
-        [$id_usuario]  // ← ya no usas $_SESSION
-    );
+    $prepare = $con->prepare("SELECT id_usuario FROM preferencias_usuario WHERE id_usuario = :id");
+    $prepare->bindParam(":id", $id_usuario);
+    $prepare->execute();
 
-    if ($stmt->rowCount() > 0) {
-        $con->ejecutar(
-            "UPDATE preferencias_usuario SET unidad_temperatura = ?, tema = ? WHERE id_usuario = ?",
-            [$unidad, $tema, $id_usuario]
-        );
+    if ($prepare->rowCount() > 0) {
+        $prepare = $con->prepare("UPDATE preferencias_usuario SET unidad_temperatura = :unidad, tema = :tema WHERE id_usuario = :id");
+        $prepare->bindParam(":unidad", $unidad);
+        $prepare->bindParam(":tema", $tema);
+        $prepare->bindParam(":id", $id_usuario);
+        $prepare->execute();
     } else {
-        $con->ejecutar(
-            "INSERT INTO preferencias_usuario (id_usuario, unidad_temperatura, tema) VALUES (?, ?, ?)",
-            [$id_usuario, $unidad, $tema]
-        );
+        $prepare = $con->prepare("INSERT INTO preferencias_usuario (id_usuario, unidad_temperatura, tema) VALUES (:id, :unidad, :tema)");
+        $prepare->bindParam(":id", $id_usuario);
+        $prepare->bindParam(":unidad", $unidad);
+        $prepare->bindParam(":tema", $tema);
+        $prepare->execute();
     }
 
     echo "correcto";
     exit;
 }
 
-// AGREGAR CON SP
 elseif (isset($_GET["agregar_preferencia_sp"]) && $login) {
     $prepare = $con->prepare("CALL insertar_preferencias(:p_id_usuario, :p_unidad_temperatura, :p_tema)");
     $prepare->bindParam(":p_id_usuario", $_POST["id_usuario"]);
@@ -148,8 +132,7 @@ elseif (isset($_GET["agregar_preferencia_sp"]) && $login) {
     exit;
 }
 
-// MODIFICAR CON SP
-elseif (isset($_GET["modificar_preferencia"]) && $login) {
+elseif (isset($_GET["modificar_preferencia"]) && $esAdmin) {
     $prepare = $con->prepare("CALL actualizar_preferencias(:p_id_usuario, :p_unidad_temperatura, :p_tema)");
     $prepare->bindParam(":p_id_usuario", $_POST["id_usuario"]);
     $prepare->bindParam(":p_unidad_temperatura", $_POST["unidad"]);
