@@ -8,37 +8,30 @@
 
     <link rel="stylesheet" href="styles.css">
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
+</head>
 <body>
 
 <!-- Barra superior -->
 <header class="navbar shadow-sm mb-2">
     <h1 class="logo">Clima App</h1> 
         <a href="/AWOSVS/consultas_clima/consultas_clima.html">
-            <button class="btn-custom boton1"> Consultas </button>
+            <button class="btn-custom boton1"> Iniciar Sesion </button>
         </a>
+        <!--
         <a href="/AWOSVS/victor/victor/index.html">
            <button class="btn-custom boton1"> Favoritos </button>
         </a>
         <a href="/AWOSVS/API-abdiel/API-abdiel/index.html">
             <button class="btn-custom boton1"> Ciudades </button>
         </a>
-    
-       <div class="text-end mt-1">
-            <a id="btnIniciarSesion" class="btn btn-outline-info" style="visibility: hidden;" href="login.html">Iniciar Sesión</a>
-        </div>
-        <div class="text-end mt-1">
-            <button id="btnCerrarSesion" class="btn btn-outline-danger" style="visibility: hidden;">Cerrar Sesión</button>
-        </div>
-
+        
     <div class="menu-btn" id="menuBtn">
         ☰
     </div>
+    -->
 </header>
 
-<!-- Sidebar -->
+<!-- Sidebar 
 <aside class="sidebar" id="sidebar">
 
     <a href="/AWOSVS/apiangel-git/apiangel-git/practicaAWOS/index.html">
@@ -53,7 +46,7 @@
 </aside>
 
 <div class="overlay" id="overlay"></div>
-
+-->
 <!----------Contenido-------------------->
 
 <!-- div del tirulo -->
@@ -76,65 +69,41 @@
     <div id="hum1"></div>
     <img id="img1">
 </section>
-
+<!--
 <section class="card">
-    <div class="city" id="city2">Monclova</div>
+    Clima de hoy (Monclova)
     <div id="data2"></div>
-    <div id="desc2"></div>
-    <div id="hum2"></div>
     <img id="img2">
 </section>
 
 <section class="card">
-    <div class="city" id="city3">Piedras Negras</div>
+    Clima de hoy (Piedras Negras)
     <div id="data3"></div>
-    <div id="desc3"></div>
-    <div id="hum3"></div>
     <img id="img3">
 </section>
 
 <section class="card">
-    <div class="city" id="city4">Nueva York</div>
+    Clima de hoy (Nueva York)
     <div id="data4"></div>
-    <div id="desc4"></div>
-    <div id="hum4"></div>
     <img id="img4">
 </section>
 
 <section class="card">
-    <div class="city" id="city5">Tokyo</div>
+    Clima de hoy (Tokyo)
     <div id="data5"></div>
-    <div id="desc5"></div>
-    <div id="hum5"></div>
     <img id="img5">
 </section>
 
 <section class="card">
-    <div class="city" id="city6">Alejandria</div>
+    Clima de hoy (Alejandria)
     <div id="data6"></div>
-    <div id="desc6"></div>
-    <div id="hum6"></div>
     <img id="img6">
 </section>
+-->
 
 <script src="PW_Test/weather.js"></script>
 
 </section>
-
-    <div class="chat-section mt-5 mb-4">
-            <h3 class="text-center mb-4" style="color: #333; font-weight: bold;">
-                Chat comunitario en tiempo real
-            </h3>
-            
-            <iframe 
-                src="/AWOSVS/ratchet.html"
-                width="100%"
-                height="600px"          
-                frameborder="0"
-                title="Chat en vivo"
-                style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); background: white;">
-            </iframe>
-    </div>
 
     <a href="https://wa.me/8781150384?text=Cual es el clima de mi ciudad?" target="_blank" class="btn btn-success rounded rounded-circle btn-whatsapp" style="
         position: fixed;
@@ -160,10 +129,11 @@
     allowfullscreen>
   </iframe>
 </div>
-<script src="login.js"></script>
+
 </body>
 </html>
 
+<!-- Script para abrir y cerrar el sidebar
 <script>
     const menuBtn = document.getElementById("menuBtn");
     const sidebar = document.getElementById("sidebar");
@@ -179,5 +149,7 @@
         overlay.classList.remove("active");
     });
 </script>
+
+ -->
 
 

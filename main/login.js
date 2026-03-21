@@ -12,7 +12,6 @@ if (token) {
 }
 
 
-
 // 🔍 Login
 $("#frmLogin").submit(function (event) {
     event.preventDefault();
@@ -44,6 +43,7 @@ $("#frmLogin").submit(function (event) {
     });
 });
 
+        console.log("Inicio de sesión exitoso");
 
 // botoens index
  document.addEventListener("DOMContentLoaded", function () {

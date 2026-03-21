@@ -22,6 +22,7 @@ app.get("/api/clima/:ciudad", async (req, res) => {
             ciudad: data.name,
             temperatura: data.main.temp,
             descripcion: data.weather[0].description,
+            humedad: data.main.humidity,
             icono: data.weather[0].icon
         });
 

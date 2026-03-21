@@ -45,6 +45,7 @@
                     <th>País</th>
                     <th>Temperatura</th>
                     <th>Descripción</th>
+                    <th>Humedad</th>
                     <th>Fecha y hora</th>
                     <th>Eliminar</th>
                     <th>Editar</th>
@@ -90,6 +91,11 @@
                     <input type="text" id="txtDescripcion" name="txtDescripcion" class="form-control">
                 </div>
 
+                <div class="col-md-2">
+                    <label class="form-label">Humedad</label>
+                    <input type="number" step="0.1" id="txtHumedad" name="txtHumedad" class="form-control">
+                </div>
+
                 <div class="col-12 mt-3">
                     <button type="submit" class="btn btn-outline-secondary me-2">
                         Guardar
@@ -102,9 +108,27 @@
             </div>
         </form>
     </div>
-</div>
-
-        
+</div>  
     </div>
+
+    <div id="liveToast" class="toast shadow border-0 rounded-3"
+     role="alert"
+     aria-live="assertive"
+     aria-atomic="true"
+     data-bs-delay="3000"
+    style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+
+    <div class="toast-header bg-warning text-black rounded-top">
+        <strong class="me-auto">Notificación</strong>
+        <small>Ahora</small>
+        <button type="button" class="btn-close"
+                data-bs-dismiss="toast"></button>
+    </div>
+
+    <div class="toast-body bg-light">
+        Nuevo cambio en consultas.
+    </div>
+
+</div>
 </body>
 </html>
