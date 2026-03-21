@@ -1,3 +1,12 @@
+const token = localStorage.getItem("jwt");
+if (token) {
+    $.ajaxSetup({
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
+
 function buscarUsuarios() {
     $.get("servicio.php?usuarios", function (usuarios) {
         $("#tbodyUsuarios").html("")
