@@ -1,26 +1,66 @@
-body {
-    transition: background 0.3s, color 0.3s;
-    padding: 20px;
-}
+/* Tema claro y oscuro para el módulo Preferencias */
+body { transition: background 0.3s, color 0.3s; }
 
+/* Clases de tema */
 .claro {
-    background-color: #ffffff;
-    color: #212529;
+  background-color: #ffffff;
+  color: #212529;
 }
 
 .oscuro {
-    background-color: #090a0b;
-    color: #f8f9fa;
+  background-color: #2b2d30;
+  color: #e0e0e0;
 }
 
-.opcion {
-    margin-bottom: 20px;
+/* Tablas en modo oscuro */
+.oscuro table,
+.oscuro thead,
+.oscuro tbody,
+.oscuro th,
+.oscuro td {
+  color: #e0e0e0 !important;
+  border-color: #555 !important;
+  background-color: #3c3f41 !important;
 }
 
-.form-check {
-    margin: 10px 0;
+/* Encabezados de tabla y filas */
+.oscuro thead th {
+  background-color: #33363a !important;
+  color: #e8e8e8 !important;
+}
+.oscuro tbody tr:nth-child(even) td {
+  background-color: #3a3d40 !important;
 }
 
-.btn {
-    margin-top: 15px;
+/* Inputs, selects y textareas en modo oscuro */
+.oscuro input,
+.oscuro select,
+.oscuro textarea,
+.oscuro .form-control {
+  background-color: #3c3f41 !important;
+  color: #e0e0e0 !important;
+  border-color: #555 !important;
+  box-shadow: none !important;
 }
+
+/* Placeholders más suaves en oscuro */
+.oscuro ::placeholder {
+  color: #bdbdbd !important;
+  opacity: 1;
+}
+
+
+
+/* Modales y tarjetas */
+.oscuro .modal-content,
+.oscuro .card,
+.oscuro .pref-card {
+  background-color: #121314;
+  color: #e0e0e0;
+  border-color: #222426;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+
+/* Ajustes generales para contraste y accesibilidad */
+.oscuro a { color: #8fbfff; }
+.oscuro .text-muted { color: #9aa0a6 !important; }

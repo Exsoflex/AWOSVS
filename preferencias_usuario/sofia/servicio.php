@@ -78,7 +78,7 @@ elseif (isset($_GET["obtener_preferencias"]) && !$login) {
     exit;
 }
 
-elseif (isset($_GET["preferencias"]) && $esAdmin) {
+elseif (isset($_GET["preferencias"]) && $login) {
     $select = $con->select("vista_preferencias_completo");
     header("Content-Type: application/json");
     echo json_encode($select->execute());

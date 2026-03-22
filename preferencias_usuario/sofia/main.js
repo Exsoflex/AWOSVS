@@ -1,23 +1,15 @@
 $(document).ready(function() {
 
-    const token = localStorage.getItem("jwt");
-    if (token) {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        const tipo = payload.sub.split("/")[2];
 
-        if (tipo !== "1") {
-            alert("No tienes permisos");
-            window.location = "/AWOSVS/main/index.html";
-            return;
+var token = localStorage.getItem("jwt");
+
+if (token) {
+    $.ajaxSetup({
+        headers: {
+            Authorization: `Bearer ${token}`
         }
-
-        $.ajaxSetup({
-            headers: { Authorization: `Bearer ${token}` }
-        });
-    } else {
-        window.location = "/AWOSVS/main/index.html";
-        return;
-    }
+    });
+}
 
     obtenerPreferencias();
     buscarPreferencias();
