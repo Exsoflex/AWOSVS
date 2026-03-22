@@ -1,4 +1,3 @@
-$(document).ready(function() {
 
 
 var token = localStorage.getItem("jwt");
@@ -20,7 +19,7 @@ if (token) {
     $('#btnGuardar').click(function() {
         guardarPreferencias();
     });
-});
+
 
 //////
 function obtenerPreferencias() {

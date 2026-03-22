@@ -62,7 +62,7 @@ $esAdmin = $login && $tipo == "1";
 
 // ENDPOINTS
 
-if (isset($_GET["usuarios"]) && $esAdmin) {
+if (isset($_GET["usuarios"])) {
   $select = $con->select("view_usuarios_favoritos", "*");
   $select->limit(20);
   header("Content-Type: application/json");
@@ -75,7 +75,7 @@ elseif (isset($_GET["editarProducto"]) && $esAdmin) {
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["usuariosCombo"]) && $esAdmin) {
+elseif (isset($_GET["usuariosCombo"]) && $login) {
   $select = $con->select("usuarios", "id_usuario AS value, nombre AS label");
   $select->orderby("nombre ASC");
   $array = array(array("index" => 0, "value" => "", "label" => "Selecciona una opción"));
@@ -101,21 +101,21 @@ elseif (isset($_GET["ciudadesCombo"]) && $login) {
   header("Content-Type: application/json");
   echo json_encode($array);
 }
-elseif (isset($_GET["agregarFavorito"]) && $esAdmin) {
+elseif (isset($_GET["agregarFavorito"]) && $login) {
   if (!isset($_POST["id_usuario"]) || !isset($_POST["id_ciudad"])) { echo "faltan_datos"; exit; }
   $prepare = $con->prepare("CALL insertarFavorito(:usuario, :ciudad)");
   $prepare->bindParam(":usuario", $_POST["id_usuario"]);
   $prepare->bindParam(":ciudad", $_POST["id_ciudad"]);
   echo $prepare->execute() ? "correcto" : "error";
 }
-elseif (isset($_GET["editarFavorito"]) && $esAdmin) {
+elseif (isset($_GET["editarFavorito"]) && $login) {
   $id = $_GET["id"];
   $select = $con->select("favoritos", "*");
   $select->where("id_favorito", "=", $id);
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["ciudadesPopulares"]) && $login) {
+elseif (isset($_GET["ciudadesPopulares"])) {
   $select = $con->select("view_ciudades_populares", "*");
   header("Content-Type: application/json");
   echo json_encode($select->execute());

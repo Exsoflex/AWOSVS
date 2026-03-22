@@ -61,7 +61,7 @@ catch (Exception $e) {
 $esAdmin = $login && $tipo == "1";
 // endpoints
 
-if (isset($_GET["usuarios"]) && $esAdmin) {
+if (isset($_GET["usuarios"])&& $login) {
   $select = $con->select("view_usr_busquedas");
   $select->orderby("id_usuario DESC");
   $select->limit(10);
@@ -78,7 +78,7 @@ elseif (isset($_GET["editarUsuario"]) && $esAdmin) {
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["categoriasCombo"]) && $esAdmin) {
+elseif (isset($_GET["categoriasCombo"]) && $login) {
   $select = $con->select("categorias", "id AS value, nombre AS label");
   $select->orderby("nombre ASC");
   $select->limit(10);
