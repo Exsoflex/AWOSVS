@@ -1,3 +1,25 @@
+(function() {
+    var tkn = localStorage.getItem("jwt");
+    
+    if (!tkn) {
+        window.location = "/AWOSVS/main/index.html";
+        return;
+    }
+
+    const payload = JSON.parse(atob(tkn.split(".")[1]));
+    const tipo = payload.sub.split("/")[2];
+
+    if (tipo !== "1") {
+        alert("No tienes permisos");
+        window.location = "/AWOSVS/main/index.html";
+        return;
+    }
+
+    $.ajaxSetup({
+        headers: { Authorization: `Bearer ${tkn}` }
+    });
+})();
+
 function buscarUsuarios() {
     $.get("servicio.php?usuarios", function (usuarios) {
         $("#tbodyUsuarios").html("")

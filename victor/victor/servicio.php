@@ -17,9 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
   exit;
 }
 
-if (isset($_GET["PING"])) {
-  exit;
-}
+if (isset($_GET["PING"])) exit;
 
 date_default_timezone_set("America/Matamoros");
 
@@ -28,153 +26,98 @@ if (isset($_GET["DATETIME"])) {
   exit;
 }
 
-
-// ------------------------------------------------------
-// ------------------------------------------------------
-// Debajo de este comentario irá la configuración a la BD
-// y las funciones del servicio para la aplicación móvil.
-
 require "conexion.php";
 require "enviarCorreo.php";
+require $_SERVER['DOCUMENT_ROOT'] . "/AWOSVS/main/firebase-php-jwt/vendor/autoload.php";
 
 $con = new Conexion(array(
-  "tipo" => "mysql",
-  "servidor" => "46.28.42.226",
-  "bd" => "u760464709_24005224_bd",
-  "usuario" => "u760464709_24005224_usr",
+  "tipo"       => "mysql",
+  "servidor"   => "46.28.42.226",
+  "bd"         => "u760464709_24005224_bd",
+  "usuario"    => "u760464709_24005224_usr",
   "contrasena" => "8PEd!gd5x+Sb"
 ));
 
-if (isset($_GET["iniciarSesion"])) {
-  $select->where("usuario", "=", $_POST["usuario"]);
-  $select->where_and("contrasena", "=", $_POST["contrasena"]);
+// VALIDAR JWT
+$headers = getallheaders();
+$token = "";
+if (isset($headers["Authorization"])) {
+  $token = str_replace("Bearer ", "", $headers["Authorization"]);
+}
 
-  if (count($select->execute())) {
-    echo "correcto";
-  } else {
-    echo "error";
-  }
-} elseif (isset($_GET["usuarios"])) {
+try {
+  $decoded    = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key("Test12345-----------------------------------------------", "HS256"));
+  $usuario    = explode("/", $decoded->sub);
+  $id_usuario = $usuario[0];
+  $usr        = $usuario[1];
+  $tipo       = $usuario[2];
+  $login      = true;
+}
+catch (Exception $e) {
+  $login      = false;
+  $id_usuario = null;
+}
 
-  $select = $con->select(
-    "view_usuarios_favoritos",
-    "*
-    "
-  );
+$esAdmin = $login && $tipo == "1";
 
+// ENDPOINTS
+
+if (isset($_GET["usuarios"]) && $esAdmin) {
+  $select = $con->select("view_usuarios_favoritos", "*");
   $select->limit(20);
-
   header("Content-Type: application/json");
   echo json_encode($select->execute());
-} elseif (isset($_GET["editarProducto"])) {
+}
+elseif (isset($_GET["editarProducto"]) && $esAdmin) {
   $id = $_GET["id"];
-
   $select = $con->select("productos", "*");
   $select->where("id", "=", $id);
-
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-
-///////////miooooo/////////////
-elseif (isset($_GET["usuariosCombo"])) {
-
+elseif (isset($_GET["usuariosCombo"]) && $esAdmin) {
   $select = $con->select("usuarios", "id_usuario AS value, nombre AS label");
   $select->orderby("nombre ASC");
-
-  $array = array(
-    array("index" => 0, "value" => "", "label" => "Selecciona una opción")
-  );
-
+  $array = array(array("index" => 0, "value" => "", "label" => "Selecciona una opción"));
   foreach ($select->execute() as $x => $usuario) {
-    $array[] = array(
-      "index" => $x + 1,
-      "value" => $usuario["value"],
-      "label" => $usuario["label"]
-    );
+    $array[] = array("index" => $x + 1, "value" => $usuario["value"], "label" => $usuario["label"]);
   }
-
   header("Content-Type: application/json");
   echo json_encode($array);
 }
-
-
-
-////////miooooo/////////
-elseif (isset($_GET["eliminarFavorito"])) {
-
-  if (!isset($_POST["id_usuario"])) {
-    echo "Falta id_usuario";
-    exit;
-  }
-
+elseif (isset($_GET["eliminarFavorito"]) && $esAdmin) {
+  if (!isset($_POST["id_usuario"])) { echo "Falta id_usuario"; exit; }
   $prepare = $con->prepare("CALL eliminarFavoritos(:usuario)");
-
   $prepare->bindParam(":usuario", $_POST["id_usuario"]);
-
-  if ($prepare->execute()) {
-    echo "correcto";
-  } else {
-    echo "error";
-  }
-} elseif (isset($_GET["ciudadesCombo"])) {
-
+  echo $prepare->execute() ? "correcto" : "error";
+}
+elseif (isset($_GET["ciudadesCombo"]) && $login) {
   $select = $con->select("ciudades", "id_ciudad AS value, nombre AS label");
   $select->orderby("nombre ASC");
-
-  $array = array(
-    array("index" => 0, "value" => "", "label" => "Selecciona una opción")
-  );
-
-  foreach ($select->execute() as $x => $usuario) {
-    $array[] = array(
-      "index" => $x + 1,
-      "value" => $usuario["value"],
-      "label" => $usuario["label"]
-    );
+  $array = array(array("index" => 0, "value" => "", "label" => "Selecciona una opción"));
+  foreach ($select->execute() as $x => $ciudad) {
+    $array[] = array("index" => $x + 1, "value" => $ciudad["value"], "label" => $ciudad["label"]);
   }
-
   header("Content-Type: application/json");
   echo json_encode($array);
-
-
-} elseif (isset($_GET["agregarFavorito"])) {
-
-  if (!isset($_POST["id_usuario"]) || !isset($_POST["id_ciudad"])) {
-    echo "faltan_datos";
-    exit;
-  }
-
+}
+elseif (isset($_GET["agregarFavorito"]) && $esAdmin) {
+  if (!isset($_POST["id_usuario"]) || !isset($_POST["id_ciudad"])) { echo "faltan_datos"; exit; }
   $prepare = $con->prepare("CALL insertarFavorito(:usuario, :ciudad)");
-
   $prepare->bindParam(":usuario", $_POST["id_usuario"]);
   $prepare->bindParam(":ciudad", $_POST["id_ciudad"]);
-
-  if ($prepare->execute()) {
-    echo "correcto";
-  } else {
-    echo "error";
-  }
-} elseif (isset($_GET["editarFavorito"])) {
-
+  echo $prepare->execute() ? "correcto" : "error";
+}
+elseif (isset($_GET["editarFavorito"]) && $esAdmin) {
   $id = $_GET["id"];
-
   $select = $con->select("favoritos", "*");
   $select->where("id_favorito", "=", $id);
-
-  header("Content-Type: application/json");
-  echo json_encode($select->execute());
-} elseif (isset($_GET["ciudadesPopulares"])) {
-
-  $select = $con->select(
-    "view_ciudades_populares",
-    "*"
-
-  );
-
-
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-
+elseif (isset($_GET["ciudadesPopulares"]) && $login) {
+  $select = $con->select("view_ciudades_populares", "*");
+  header("Content-Type: application/json");
+  echo json_encode($select->execute());
+}
 ?>

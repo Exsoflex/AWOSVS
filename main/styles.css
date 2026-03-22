@@ -62,11 +62,12 @@ html, body {
 
 
 .card {
-    border: 2px solid #000;
+    border: 1px solid #000;
     border-radius: 15px;
     background-color: white;
     padding: 40px;
     text-align: center;
+    box-shadow:#000000;
 }
 
 
@@ -249,3 +250,124 @@ html, body {
     box-sizing: border-box;
 }
 
+
+    .body-login {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      
+      padding: 2rem;
+      animation: fadeIn 1.3s ease-in-out;
+      width: 100%;
+    }
+    .login-card h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+    .btn-primary {
+      background: #4facfe;
+      border: none;
+    }
+    .btn-primary:hover {
+      background: #00c6fb;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+/* =============================================
+   TEMAS
+   ============================================= */
+
+body {
+    transition: background 0.3s, color 0.3s;
+}
+
+.claro {
+    background-color: #f5f5f5;
+    color: #212529;
+}
+
+.claro .navbar {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.claro .sidebar {
+    background-color: #f4f4f4;
+    color: #000000;
+}
+
+.claro .div2 {
+    background-color: #ffffff;
+}
+
+.claro .card {
+    background-color: #ffffff;
+    color: #212529;
+    border-color: #dee2e6;
+}
+
+/* ---- OSCURO ---- */
+
+.oscuro {
+    background-color: #2b2d30;
+    color: #e0e0e0;
+}
+
+.oscuro .navbar {
+    background-color: #1e1f22 !important;
+    color: #e0e0e0;
+}
+
+.oscuro .logo {
+    color: #e0e0e0;
+}
+
+.oscuro .sidebar {
+    background-color: #1e1f22;
+    color: #e0e0e0;
+}
+
+.oscuro .div2 {
+    background-color: #2b2d30;
+}
+
+.oscuro .card {
+    background-color: #3c3f41;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+.oscuro .btn-custom {
+    background-color: #3c3f41;
+    color: #e0e0e0;
+    border-color: #888;
+}
+
+.oscuro .btn-custom:hover {
+    background: linear-gradient(135deg, #1290cf, #000be0, #5e30db);
+    color: white;
+}
+
+.oscuro .dropdown-menu {
+    background-color: #3c3f41;
+    color: #e0e0e0;
+}
+
+.oscuro .dropdown-menu h5,
+.oscuro .dropdown-menu h6,
+.oscuro .dropdown-menu label {
+    color: #e0e0e0;
+}

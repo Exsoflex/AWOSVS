@@ -17,9 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "OPTIONS") {
   exit;
 }
 
-if (isset($_GET["PING"])) {
-  exit;
-}
+if (isset($_GET["PING"])) exit;
 
 date_default_timezone_set("America/Matamoros");
 
@@ -28,14 +26,9 @@ if (isset($_GET["DATETIME"])) {
   exit;
 }
 
-
-// ------------------------------------------------------
-// ------------------------------------------------------
-// Debajo de este comentario irá la configuración a la BD
-// y las funciones del servicio para la aplicación móvil.
-
 require "conexion.php";
 require "enviarCorreo.php";
+require $_SERVER['DOCUMENT_ROOT'] . "/AWOSVS/main/firebase-php-jwt/vendor/autoload.php";
 
 $con = new Conexion(array(
   "tipo"       => "mysql",
@@ -45,28 +38,38 @@ $con = new Conexion(array(
   "contrasena" => "8PEd!gd5x+Sb"
 ));
 
-if (isset($_GET["iniciarSesion"])) {
-  $select = $con->select("usuarios", "id");
-  $select->where("usuario", "=", $_POST["usuario"]);
-  $select->where_and("contrasena", "=", $_POST["contrasena"]);
+// VALIDAR JWT
 
-  if (count($select->execute())) {
-    echo "correcto";
-  }
-  else {
-    echo "error";
-  }
+$headers = getallheaders();
+$token = "";
+if (isset($headers["Authorization"])) {
+  $token = str_replace("Bearer ", "", $headers["Authorization"]);
 }
-elseif (isset($_GET["usuarios"])) {
+
+try {
+  $decoded = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key("Test12345-----------------------------------------------", "HS256"));
+  $usuario = explode("/", $decoded->sub);
+  $id_usuario = $usuario[0];
+  $usr        = $usuario[1];
+  $tipo       = $usuario[2];
+  $login = true;
+}
+catch (Exception $e) {
+  $login = false;
+  $id_usuario = null;
+}
+$esAdmin = $login && $tipo == "1";
+// endpoints
+
+if (isset($_GET["usuarios"]) && $esAdmin) {
   $select = $con->select("view_usr_busquedas");
-  //$select->innerjoin("categorias ON categorias.id = usuarios.categoria");
   $select->orderby("id_usuario DESC");
   $select->limit(10);
 
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["editarUsuario"])) {
+elseif (isset($_GET["editarUsuario"]) && $esAdmin) {
   $id = $_GET["id"];
 
   $select = $con->select("usuarios", "*");
@@ -75,7 +78,7 @@ elseif (isset($_GET["editarUsuario"])) {
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["categoriasCombo"])) {
+elseif (isset($_GET["categoriasCombo"]) && $esAdmin) {
   $select = $con->select("categorias", "id AS value, nombre AS label");
   $select->orderby("nombre ASC");
   $select->limit(10);
@@ -83,49 +86,42 @@ elseif (isset($_GET["categoriasCombo"])) {
   $array = array(array("index" => 0, "value" => "", "label" => "Selecciona una opción"));
 
   foreach ($select->execute() as $x => $categoria) {
-      $array[] = array("index" => $x + 1, "value" => $categoria["value"],  "label" => $categoria["label"]);
+      $array[] = array("index" => $x + 1, "value" => $categoria["value"], "label" => $categoria["label"]);
   }
 
   header("Content-Type: application/json");
   echo json_encode($array);
 }
-elseif (isset($_GET["eliminarUsuario"])) {
+elseif (isset($_GET["eliminarUsuario"]) && $esAdmin) {
   $prepare = $con->prepare("CALL eliminarUsuario(:id_usuario)");
-  $prepare->bindParam(":id_usuario",$_POST["txtId"]);
+  $prepare->bindParam(":id_usuario", $_POST["txtId"]);
 
   if ($prepare->execute()) {
     echo "correcto";
-  }
-  else {
+  } else {
     echo "error";
   }
 }
-elseif (isset($_GET["agregarUsuario"])) {
+elseif (isset($_GET["agregarUsuario"]) && $esAdmin) {
+  $prepare = $con->prepare("CALL insertarUsuario(:nombre, :email, :password)");
+  $prepare->bindParam(":nombre", $_POST["txtNombre"]);
+  $prepare->bindParam(":email", $_POST["txtEmail"]);
+  $prepare->bindParam(":password", $_POST["txtContrasena"]);
+  $prepare->execute();
 
-    $prepare = $con->prepare("CALL insertarUsuario(:nombre, :email, :password)");
-
-    #$password = password_hash($_POST["txtContrasena"], PASSWORD_DEFAULT);
-
-    $prepare->bindParam(":nombre", $_POST["txtNombre"]);
-    $prepare->bindParam(":email", $_POST["txtEmail"]);
-    $prepare->bindParam(":password", $_POST["txtContrasena"]);
-    
-    $prepare->execute();
-
-    echo "correcto";
+  echo "correcto";
 }
-elseif (isset($_GET["modificarUsuario"])) {
+elseif (isset($_GET["modificarUsuario"]) && $login) {
   $prepare = $con->prepare("CALL modificarUsuario(:id_usuario,:nombre,:email,:password)");
-  $prepare->bindParam(":id_usuario",$_POST["txtId"]);
-  $prepare->bindParam(":nombre",$_POST["txtNombre"]);
-  $prepare->bindParam(":email",$_POST["txtEmail"]);
-  $prepare->bindParam(":password",$_POST["txtContrasena"]);
+  $prepare->bindParam(":id_usuario", $_POST["txtId"]);
+  $prepare->bindParam(":nombre", $_POST["txtNombre"]);
+  $prepare->bindParam(":email", $_POST["txtEmail"]);
+  $prepare->bindParam(":password", $_POST["txtContrasena"]);
+
   if ($prepare->execute()) {
     echo "correcto";
-  }
-  else {
+  } else {
     echo "error";
   }
 }
-
 ?>

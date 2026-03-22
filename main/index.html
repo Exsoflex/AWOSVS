@@ -8,8 +8,11 @@
 
     <link rel="stylesheet" href="styles.css">
      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-</head>
-<body>
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+<body class="claro">
 
 <!-- Barra superior -->
 <header class="navbar shadow-sm mb-2">
@@ -23,6 +26,13 @@
         <a href="/AWOSVS/API-abdiel/API-abdiel/index.html">
             <button class="btn-custom boton1"> Ciudades </button>
         </a>
+    
+       <div class="text-end mt-1">
+            <a id="btnIniciarSesion" class="btn btn-outline-info" style="visibility: hidden;" href="login.html">Iniciar Sesión</a>
+        </div>
+        <div class="text-end mt-1">
+            <button id="btnCerrarSesion" class="btn btn-outline-danger" style="visibility: hidden;">Cerrar Sesión</button>
+        </div>
 
     <div class="menu-btn" id="menuBtn">
         ☰
@@ -36,11 +46,53 @@
     <h2>Usuario</h2>
     </a>
 
-    <a href="/AWOSVS/preferencias_usuario/sofia/index.html">
-    <p>Preferencias</p>
-    
-    </a>
-
+  <div class="card text">
+          <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  elegir preferencias
+                </a>
+                <ul class="dropdown-menu shadow-lg border-0 p-4" style="width: 300px; border-radius: 1.5rem;">
+                  <li><h5 class="dropdown-header fw-bold mb-3">Preferencias</h5></li>
+                  <li>
+                    <form id="formPreferencias">
+                      <div class="opcion mb-3">
+                        <h6 class="fw-semibold">Unidad de temperatura:</h6>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="unidad" id="celsius" value="C" checked>
+                          <label class="form-check-label" for="celsius">Celsius</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="unidad" id="fahrenheit" value="F">
+                          <label class="form-check-label" for="fahrenheit">Fahrenheit</label>
+                        </div>
+                      </div>
+                      <li><hr class="dropdown-divider"></li>
+                      <div class="opcion mb-4">
+                        <h6 class="fw-semibold">Tema:</h6>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="tema" id="temaClaro" value="claro" checked>
+                          <label class="form-check-label" for="temaClaro">Claro</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="tema" id="temaOscuro" value="oscuro">
+                          <label class="form-check-label" for="temaOscuro">Oscuro</label>
+                        </div>
+                      </div>
+                      <button type="button" id="btnGuardar" class="btn btn-primary w-100 rounded-pill">
+                        Guardar Cambios
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/AWOSVS/preferencias_usuario/sofia/index.html">ver preferencias</a>
+              </li>
+            </ul>
+          </div>
+        </div>
 </aside>
 
 <div class="overlay" id="overlay"></div>
@@ -61,38 +113,50 @@
 <section class="parent1">
 
 <section class="card">
-    Clima de hoy (Nava)
+    <div class="city" id="city1">Nava</div>
     <div id="data1"></div>
+    <div id="desc1"></div>
+    <div id="hum1"></div>
     <img id="img1">
 </section>
 
 <section class="card">
-    Clima de hoy (Monclova)
+    <div class="city" id="city2">Monclova</div>
     <div id="data2"></div>
+    <div id="desc2"></div>
+    <div id="hum2"></div>
     <img id="img2">
 </section>
 
 <section class="card">
-    Clima de hoy (Piedras Negras)
+    <div class="city" id="city3">Piedras Negras</div>
     <div id="data3"></div>
+    <div id="desc3"></div>
+    <div id="hum3"></div>
     <img id="img3">
 </section>
 
 <section class="card">
-    Clima de hoy (Nueva York)
+    <div class="city" id="city4">Nueva York</div>
     <div id="data4"></div>
+    <div id="desc4"></div>
+    <div id="hum4"></div>
     <img id="img4">
 </section>
 
 <section class="card">
-    Clima de hoy (Tokyo)
+    <div class="city" id="city5">Tokyo</div>
     <div id="data5"></div>
+    <div id="desc5"></div>
+    <div id="hum5"></div>
     <img id="img5">
 </section>
 
 <section class="card">
-    Clima de hoy (Alejandria)
+    <div class="city" id="city6">Alejandria</div>
     <div id="data6"></div>
+    <div id="desc6"></div>
+    <div id="hum6"></div>
     <img id="img6">
 </section>
 
@@ -127,7 +191,7 @@
     </div>
     
 </div>
-
+<br>
 <!--------------------------------------->
     <div style="display: flex; justify-content: center;">
   <iframe width="560" height="315" 
@@ -139,7 +203,7 @@
     allowfullscreen>
   </iframe>
 </div>
-
+<script src="login.js"></script>
 </body>
 </html>
 
