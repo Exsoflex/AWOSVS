@@ -112,7 +112,7 @@ elseif (isset($_GET["consultas"])) {
 }
 
 
-elseif (isset($_GET["eliminarConsulta"])) {
+elseif (isset($_GET["eliminarConsulta"])&& $esAdmin) {
 
     $id = $_POST["txtId"];
 
@@ -180,7 +180,7 @@ elseif (isset($_GET["obtenerConsulta"])) {
 
 
 
-elseif (isset($_GET["modificarConsulta"])) {
+elseif (isset($_GET["modificarConsulta"]) && $esAdmin) {
 
     $id = $_POST["txtIdConsulta"];
     $usuario = $_POST["cboUsuario"];

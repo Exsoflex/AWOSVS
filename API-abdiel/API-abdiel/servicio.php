@@ -124,7 +124,7 @@ if (isset($_GET["editarCiudad"])) {
     exit;
 }
 
-if(isset($_GET["nuevaCiudad"])){
+if(isset($_GET["nuevaCiudad"])) {
     if (!$esAdmin){
         header("content-Type: application/json");
         http_response_code(403);

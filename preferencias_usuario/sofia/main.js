@@ -1,16 +1,4 @@
-var token = localStorage.getItem("jwt");
-
-if (token) {
-    $.ajaxSetup({
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-} else {
-    window.location.href = window.location.origin + "/AWOSVS/main/index_no_session.html";
-}
-
-    obtenerPreferencias();
+   obtenerPreferencias();
     buscarPreferencias();
     $('input[name="tema"]').change(function() {
         aplicarTema($(this).val());
