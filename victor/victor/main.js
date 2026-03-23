@@ -1,12 +1,13 @@
+var token = localStorage.getItem("jwt");
 
-var tokenf = localStorage.getItem("jwt");
-
-if (tokenf) {
+if (token) {
     $.ajaxSetup({
         headers: {
             Authorization: `Bearer ${token}`
         }
     });
+} else {
+    window.location.href = window.location.origin + "/AWOSVS/main/index_no_session.html";
 }
 function buscarUsuarios() {
     $.get("servicio.php?usuarios", function (usuarios) {

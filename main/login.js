@@ -2,6 +2,9 @@ const API = "http://localhost/AWOSVS/main";
 const SERVICIO_PREF = "/AWOSVS/preferencias_usuario/sofia/servicio.php";
 
 const token = localStorage.getItem("jwt");
+const paginasPublicas = ["login.html", "index_no_session.html"];
+
+const paginaActual = window.location.pathname.split("/").pop();
 
 if (token) {
     $.ajaxSetup({
@@ -9,6 +12,10 @@ if (token) {
             Authorization: `Bearer ${token}`
         }
     });
+} else {
+    if (!paginasPublicas.includes(paginaActual)) {
+    window.location.href = "/AWOSVS/main/index_no_session.html";
+    }
 }
 
 // =============================================
@@ -36,17 +43,16 @@ $("#frmLogin").submit(function (event) {
     });
 });
 
-// BOTONES SESIÓN + TEMA EN TODAS LAS PÁGINAS
+//* BOTONES SESIÓN + TEMA EN TODAS LAS PÁGINAS
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Preferencias - aplicar tema guardado solo si hay sesión activa
+    //  si hay sesión activa
     const token = localStorage.getItem("jwt");
     const temaGuardado = localStorage.getItem("pref_tema");
     if (token && temaGuardado) {
         $('body').removeClass('claro oscuro').addClass(temaGuardado);
     }
 
-    // Login - actualizar botones según sesión
     actualizarBotonesSesion();
 
     const btnCerrar = document.getElementById("btnCerrarSesion");
@@ -62,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Login - mostrar/ocultar botones según sesión
 function actualizarBotonesSesion() {
     const token = localStorage.getItem("jwt");
     const btnIniciar = document.getElementById("btnIniciarSesion");
@@ -79,9 +84,6 @@ function actualizarBotonesSesion() {
     }
 }
 
-// =============================================
-// PREFERENCIAS - TEMA Y CARGA EN INDEX
-// =============================================
 function aplicarTema(tema) {
     $('body').removeClass('claro oscuro').addClass(tema);
 }
@@ -89,12 +91,11 @@ function aplicarTema(tema) {
 document.addEventListener("DOMContentLoaded", function () {
 
     const formPref = document.getElementById("formPreferencias");
-    if (!formPref) return; // solo corre en index
+    if (!formPref) return; 
 
     const token = localStorage.getItem("jwt");
 
     if (token) {
-        // Preferencias - cargar desde BD si hay sesión
         $.get(SERVICIO_PREF + "?obtener_preferencias", function (datos) {
             if (datos.logueado) {
                 aplicarTema(datos.tema);
@@ -106,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, "json");
     } else {
-        // Preferencias - cargar desde localStorage si no hay sesión
+        // solo la carga porque la guarda en localsorage
         const temaLocal   = localStorage.getItem("pref_tema");
         const unidadLocal = localStorage.getItem("pref_unidad");
         if (temaLocal) {

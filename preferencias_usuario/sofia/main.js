@@ -1,5 +1,3 @@
-
-
 var token = localStorage.getItem("jwt");
 
 if (token) {
@@ -8,6 +6,8 @@ if (token) {
             Authorization: `Bearer ${token}`
         }
     });
+} else {
+    window.location.href = window.location.origin + "/AWOSVS/main/index_no_session.html";
 }
 
     obtenerPreferencias();
