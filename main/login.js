@@ -49,6 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Login - actualizar botones según sesión
     actualizarBotonesSesion();
 
+    //Chat se muetra solo cuando hay sesion activa
+    const chatSection = document.querySelector(".chat-section");
+    if (chatSection) {
+        chatSection.style.display = token ? "block" : "none";
+    }
+
     const btnCerrar = document.getElementById("btnCerrarSesion");
     if (btnCerrar) {
         btnCerrar.addEventListener("click", function () {
