@@ -35,6 +35,26 @@ if (isset($_GET["DATETIME"])) {
 // y las funciones del servicio para la aplicación móvil.
 
 
+// Configuración de JWT
+require $_SERVER['DOCUMENT_ROOT'] . "/AWOSVS/main/firebase-php-jwt/vendor/autoload.php";
+$headers = getallheaders();
+$token = "";
+if (isset($headers["Authorization"])) {
+  $token = str_replace("Bearer ", "", $headers["Authorization"]);
+}
+try {
+  $decoded = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key("Test12345-----------------------------------------------", "HS256"));
+  $usuario = explode("/", $decoded->sub);
+  $id_usuario = $usuario[0];
+  $usr        = $usuario[1];
+  $tipo       = $usuario[2];
+  $login = true;
+} catch (Exception $e) {
+  $login = false;
+  $id_usuario = null;
+}
+$esAdmin = $login && $tipo == "1";
+
 require "conexion.php";
 
 // Configuración de la conexión
@@ -79,17 +99,24 @@ header("Content-Type: application/json");
    
 
 if (isset($_GET["editarCiudad"])) {
-    $id       = $_POST["id_ciudad"]; 
+    if (!$esAdmin){
+        header("content-Type: application/json");
+        http_response_code(403);
+        echo json_encode(["error" => "Acceso denegado"]);
+        exit;   
+    }
+    $id       = intval($_POST["id_ciudad"]); 
     $nombre   = $_POST["nombre"];
     $pais     = $_POST["pais"];
-    $latitud  = $_POST["latitud"];
-    $longitud = $_POST["longitud"];
+    $latitud  = floatval($_POST["latitud"]);
+    $longitud = floatval($_POST["longitud"]);
 
     try {
-        $conn->query("CALL editar_ciudad($id, '$nombre', '$pais', $latitud, $longitud)");
+        $stmt = $conn->prepare("CALL editar_ciudad(?, ?, ?, ?, ?)");
+        $stmt->execute([$id, $nombre, $pais, $latitud, $longitud]);
         $resultado = true;
     } catch (Exception $e) {
-        $resultado = false;
+     $resultado = false;
     }
 
     header("Content-Type: application/json");
@@ -98,18 +125,24 @@ if (isset($_GET["editarCiudad"])) {
 }
 
 if(isset($_GET["nuevaCiudad"])){
+    if (!$esAdmin){
+        header("content-Type: application/json");
+        http_response_code(403);
+        echo json_encode(["error" => "Acceso denegado"]);
+        exit;   
+    }
     $nombre   = $_POST["nombre"];
     $pais     = $_POST["pais"];
-    $latitud  = $_POST["latitud"];
-    $longitud = $_POST["longitud"];
+    $latitud  = floatval($_POST["latitud"]);
+    $longitud = floatval($_POST["longitud"]);
 
-   
-   try {
-    $conn->query("CALL nueva_ciudad('$nombre', '$pais', $latitud, $longitud)");
-    $resultado = true;
-   } catch (Exception $e){
-    $resultado = false;
-   }
+    try {
+        $stmt = $conn->prepare("CALL nueva_ciudad(?, ?, ?, ?)");
+        $stmt->execute([$nombre, $pais, $latitud, $longitud]);
+        $resultado = true;
+    } catch (Exception $e){
+        $resultado = false;
+    }
 
     header("Content-Type: application/json");
    

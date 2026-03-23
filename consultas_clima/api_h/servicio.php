@@ -36,16 +36,17 @@ if (isset($_GET["DATETIME"])) {
 
 require "conexion.php";
 require "enviarCorreo.php";
-/*
+
+require $_SERVER['DOCUMENT_ROOT'] . "/AWOSVS/main/firebase-php-jwt/vendor/autoload.php";
 $con = new Conexion(array(
   "tipo"       => "mysql",
   "servidor"   => "46.28.42.226",
   "bd"         => "u760464709_24005224_bd",
   "usuario"    => "u760464709_24005224_usr",
   "contrasena" => "8PEd!gd5x+Sb"
-));*/
+));
 
-
+/*
 $con = new Conexion(array(
   "tipo"       => "mysql",
   "servidor"   => "localhost",
@@ -58,6 +59,26 @@ echo "conexion_ok";
 exit;
 */
 //--------------------------------------------------------//
+
+$headers = getallheaders();
+$token = "";
+if (isset($headers["Authorization"])) {
+  $token = str_replace("Bearer ", "", $headers["Authorization"]);
+}
+
+try {
+  $decoded = Firebase\JWT\JWT::decode($token, new Firebase\JWT\Key("Test12345-----------------------------------------------", "HS256"));
+  $usuario = explode("/", $decoded->sub);
+  $id_usuario = $usuario[0];
+  $usr        = $usuario[1];
+  $tipo       = $usuario[2];
+  $login = true;
+}
+catch (Exception $e) {
+  $login = false;
+  $id_usuario = null;
+}
+$esAdmin = $login && $tipo == "1";
 
 if (isset($_GET["iniciarSesion"])) {
   $select = $con->select("usuarios", "id");
@@ -181,10 +202,10 @@ elseif (isset($_GET["modificarConsulta"])) {
     ':descripcion' => $descripcion,
     ':humedad' => $humedad
     ])) {
-        $stmt->closeCursor(); // 🔥 importante
+        $stmt->closeCursor();
         echo "correcto";
     } else {
-        print_r($stmt->errorInfo()); // 🔥 AQUI VERAS EL ERROR REAL
+        print_r($stmt->errorInfo());
     }
 }
 
