@@ -98,13 +98,8 @@ header("Content-Type: application/json");
     
    
 
-if (isset($_GET["editarCiudad"])) {
-    if (!$esAdmin){
-        header("content-Type: application/json");
-        http_response_code(403);
-        echo json_encode(["error" => "Acceso denegado"]);
-        exit;   
-    }
+if (isset($_GET["editarCiudad"])&& $esAdmin) {
+    
     $id       = intval($_POST["id_ciudad"]); 
     $nombre   = $_POST["nombre"];
     $pais     = $_POST["pais"];
@@ -124,13 +119,7 @@ if (isset($_GET["editarCiudad"])) {
     exit;
 }
 
-if(isset($_GET["nuevaCiudad"])) {
-    if (!$esAdmin){
-        header("content-Type: application/json");
-        http_response_code(403);
-        echo json_encode(["error" => "Acceso denegado"]);
-        exit;   
-    }
+if(isset($_GET["nuevaCiudad"])&& $esAdmin) {
     $nombre   = $_POST["nombre"];
     $pais     = $_POST["pais"];
     $latitud  = floatval($_POST["latitud"]);
