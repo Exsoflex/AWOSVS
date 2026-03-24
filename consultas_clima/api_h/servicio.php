@@ -93,7 +93,7 @@ if (isset($_GET["iniciarSesion"])) {
   }
 }
 
-elseif (isset($_GET["consultas"])) {
+elseif (isset($_GET["consultas"])&& $esAdmin) {
 
     $select = $con->select(
         "view_consultas_detalle",
@@ -135,7 +135,7 @@ elseif (isset($_GET["ciudadesCombo"])) {
     echo json_encode($select->execute());
 }
 
-elseif (isset($_GET["usuariosCombo"])) {
+elseif (isset($_GET["usuariosCombo"])&& $esAdmin) {
 
     $select = $con->select("usuarios", "id_usuario, nombre, email");
     $select->orderby("nombre ASC");

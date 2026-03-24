@@ -102,7 +102,7 @@ elseif (isset($_GET["eliminarUsuario"]) && $esAdmin) {
     echo "error";
   }
 }
-elseif (isset($_GET["agregarUsuario"]) && $login) {
+elseif (isset($_GET["agregarUsuario"]) && $esAdmin) {
   $prepare = $con->prepare("CALL insertarUsuario(:nombre, :email, :password)");
   $prepare->bindParam(":nombre", $_POST["txtNombre"]);
   $prepare->bindParam(":email", $_POST["txtEmail"]);
@@ -111,7 +111,7 @@ elseif (isset($_GET["agregarUsuario"]) && $login) {
 
   echo "correcto";
 }
-elseif (isset($_GET["modificarUsuario"]) && $login) {
+elseif (isset($_GET["modificarUsuario"]) && $esAdmin) {
   $prepare = $con->prepare("CALL modificarUsuario(:id_usuario,:nombre,:email,:password)");
   $prepare->bindParam(":id_usuario", $_POST["txtId"]);
   $prepare->bindParam(":nombre", $_POST["txtNombre"]);

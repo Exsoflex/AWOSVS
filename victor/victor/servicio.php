@@ -62,7 +62,7 @@ $esAdmin = $login && $tipo == "1";
 
 // ENDPOINTS
 
-if (isset($_GET["usuarios"])) {
+if (isset($_GET["usuarios"]) && $esAdmin) {
   $select = $con->select("view_usuarios_favoritos", "*");
   $select->limit(20);
   header("Content-Type: application/json");
@@ -75,7 +75,7 @@ elseif (isset($_GET["editarProducto"]) && $esAdmin) {
   header("Content-Type: application/json");
   echo json_encode($select->execute());
 }
-elseif (isset($_GET["usuariosCombo"]) && $login) {
+elseif (isset($_GET["usuariosCombo"]) && $esAdmin) {
   $select = $con->select("usuarios", "id_usuario AS value, nombre AS label");
   $select->orderby("nombre ASC");
   $array = array(array("index" => 0, "value" => "", "label" => "Selecciona una opción"));
