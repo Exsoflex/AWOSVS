@@ -1,9 +1,19 @@
-
 function escaparHTML(texto) {
     const div = document.createElement("div");
     div.textContent = texto;
     return div.innerHTML;
 }
+
+var token = localStorage.getItem("jwt");
+let esAdmin = false;
+
+if(token){
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const tipo = payload.sub.split("/")[2];
+    esAdmin = tipo === "1";
+}
+
+
 
 function obtenerUbicacionUsuario() {
     if (navigator.geolocation) {
@@ -110,7 +120,9 @@ document.getElementById("buscarCiudad").addEventListener("input", function(e){
     }
 });
 
-if (!esAdmin) {
+if (esAdmin) {
+    document.getElementById("thAcciones").style.display = ""; 
+} else {
     document.getElementById("btnNuevaCiudad").style.display = "none";
 }
 
