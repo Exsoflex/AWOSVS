@@ -66,9 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnCerrar = document.getElementById("btnCerrarSesion");
     if (btnCerrar) {
         btnCerrar.addEventListener("click", function () {
-            // Login - limpiar sesión
             localStorage.removeItem("jwt");
-            // Preferencias - limpiar tema al cerrar sesión
             localStorage.removeItem("pref_tema");
             localStorage.removeItem("pref_unidad");
             window.location = "login.html";

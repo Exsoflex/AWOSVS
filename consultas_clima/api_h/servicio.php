@@ -145,7 +145,7 @@ elseif (isset($_GET["usuariosCombo"])&& $esAdmin) {
 }
 
 
-elseif (isset($_GET["agregarConsulta"])) {
+elseif (isset($_GET["agregarConsulta"])&& $esAdmin) {
 
     $usuario = $_POST["cboUsuario"];
     $ciudad = $_POST["cboCiudad"];
@@ -169,7 +169,7 @@ elseif (isset($_GET["agregarConsulta"])) {
 
 
 
-elseif (isset($_GET["obtenerConsulta"])) {
+elseif (isset($_GET["obtenerConsulta"])&& $esAdmin) {
 
     $select = $con->select("view_consultas_detalle", "*");
     $select->where("id_consulta", "=", $_GET["id"]);
