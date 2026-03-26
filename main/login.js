@@ -14,7 +14,7 @@ if (token) {
     });
 } else {
     if (!paginasPublicas.includes(paginaActual)) {
-    window.location.href = "/AWOSVS/main/index_no_session.html";
+        window.location.href = "/AWOSVS/main/index_no_session.html";
     }
 }
 
@@ -25,7 +25,7 @@ if (token) {
 $("#frmLogin").submit(function (event) {
     event.preventDefault();
 
-    $.post(`${API}/servicioInicioSesion.php?iniciarSesion`, $(this).serialize(), function (respuesta) {
+    $.post(`${API}/servicioInicioSesion.php?iniciarSesion2`, $(this).serialize(), function (respuesta) {
 
         if (respuesta === "error") {
             modalErrorLogin.show();
@@ -77,16 +77,16 @@ document.addEventListener("DOMContentLoaded", function () {
 function actualizarBotonesSesion() {
     const token = localStorage.getItem("jwt");
     const btnIniciar = document.getElementById("btnIniciarSesion");
-    const btnCerrar  = document.getElementById("btnCerrarSesion");
+    const btnCerrar = document.getElementById("btnCerrarSesion");
 
     if (!btnIniciar || !btnCerrar) return;
 
     if (token) {
         btnIniciar.style.visibility = "hidden";
-        btnCerrar.style.visibility  = "visible";
+        btnCerrar.style.visibility = "visible";
     } else {
         btnIniciar.style.visibility = "visible";
-        btnCerrar.style.visibility  = "hidden";
+        btnCerrar.style.visibility = "hidden";
     }
 }
 
@@ -97,7 +97,7 @@ function aplicarTema(tema) {
 document.addEventListener("DOMContentLoaded", function () {
 
     const formPref = document.getElementById("formPreferencias");
-    if (!formPref) return; 
+    if (!formPref) return;
 
     const token = localStorage.getItem("jwt");
 
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, "json");
     } else {
         // solo la carga porque la guarda en localsorage
-        const temaLocal   = localStorage.getItem("pref_tema");
+        const temaLocal = localStorage.getItem("pref_tema");
         const unidadLocal = localStorage.getItem("pref_unidad");
         if (temaLocal) {
             aplicarTema(temaLocal);
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#btnGuardar").click(function () {
         const token = localStorage.getItem("jwt");
         const unidad = $('input[name="unidad"]:checked').val() === "C" ? "Celsius" : "Fahrenheit";
-        const tema   = $('input[name="tema"]:checked').val();
+        const tema = $('input[name="tema"]:checked').val();
 
         if (!token) {
             // Preferencias - guardar temporal en localStorage
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert("Error al guardar: " + respuesta);
                 }
             },
-            error: function(err) {
+            error: function (err) {
                 console.log("ERROR:", err);
             }
         });

@@ -19,10 +19,10 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 $con = new Conexion(array(
-  "tipo"       => "mysql",
-  "servidor"   => "46.28.42.226",
-  "bd"         => "u760464709_24005224_bd",
-  "usuario"    => "u760464709_24005224_usr",
+  "tipo" => "mysql",
+  "servidor" => "46.28.42.226",
+  "bd" => "u760464709_24005224_bd",
+  "usuario" => "u760464709_24005224_usr",
   "contrasena" => "8PEd!gd5x+Sb"
 ));
 
@@ -54,7 +54,7 @@ if (isset($_GET["sesion"])) {
   exit;
 }
 
-if (isset($_GET["iniciarSesion"])) {
+if (isset($_GET["iniciarSesion2"])) {
 
   if (!isset($_POST["txtUsuario"]) || !isset($_POST["txtContrasena"])) {
     echo "error";
@@ -82,7 +82,7 @@ if (isset($_GET["iniciarSesion"])) {
 
       $payload = [
         "iat" => time(),
-        "exp" => time() + (60 * 60 * 24 * 7),
+        "exp" => time() + (60 * 60 * 24 * 100),
         "sub" => $usuarioDB["id_usuario"] . "/" . $usuarioDB["nombre"] . "/" . $usuarioDB["tipo"]
       ];
 
